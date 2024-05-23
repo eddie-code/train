@@ -1,4 +1,4 @@
-package com.example.member.aspect;
+package com.example.common.aspect;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
