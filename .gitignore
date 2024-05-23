@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### 内部生成 ###
+log/
