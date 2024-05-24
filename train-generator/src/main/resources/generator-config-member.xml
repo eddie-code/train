@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <properties resource="generator.properties"/>
+
+    <context id="Mysql" targetRuntime="MyBatis3" defaultModelType="flat">
+
+        <!-- 自动检查关键字，为关键字增加反引号 -->
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <!--覆盖生成XML文件-->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+        <!-- 生成的实体类添加toString()方法 -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+
+        <!-- 不生成注释 -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!-- 配置数据源，需要根据自己的项目修改 -->
+        <!--        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"-->
+        <!--                        connectionURL="jdbc:mysql://192.168.56.101:3306/imooc_train_member?serverTimezone=Asia/Shanghai"-->
+        <!--                        userId="train_member"-->
+        <!--                        password="train">-->
+        <!--        </jdbcConnection>-->
+
+        <jdbcConnection driverClass="${jdbc.driverClass}"
+                        connectionURL="${jdbc.url}"
+                        userId="${jdbc.user}"
+                        password="${jdbc.password}">
+        </jdbcConnection>
+
+        <!-- domain类的位置 targetProject是相对pom.xml的路径-->
+        <javaModelGenerator targetProject="../${projectName}/src/main/java" targetPackage="com.example.member.domain">
+            <!-- 是否允许子包，即targetPackage.schemaName.tableName -->
+            <property name="enableSubPackages" value="true"/>
+            <!-- 从数据库返回的值去掉前后空格 -->
+            <property name="trimStrings" value="true"/>
+            <!-- 是否对model添加 构造函数 -->
+            <property name="constructorBased" value="false"/>
+        </javaModelGenerator>
+
+        <!-- mapper xml的位置 targetProject是相对pom.xml的路径 -->
+        <sqlMapGenerator targetProject="../${projectName}/src/main/resources" targetPackage="mapper">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!-- mapper类的位置 targetProject是相对pom.xml的路径 -->
+        <javaClientGenerator targetProject="../${projectName}/src/main/java" targetPackage="com.example.member.mapper" type="XMLMAPPER">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+
+        <table tableName="${tableName}"/>
+        <!--<table tableName="passenger" domainObjectName="Passenger"/>-->
+        <!--<table tableName="ticket" domainObjectName="Ticket"/>-->
+    </context>
+</generatorConfiguration>
