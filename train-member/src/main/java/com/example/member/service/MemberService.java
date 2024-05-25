@@ -8,4 +8,6 @@ public interface MemberService {
 
     int count();
 
+    long register(String mobile);
+
 }

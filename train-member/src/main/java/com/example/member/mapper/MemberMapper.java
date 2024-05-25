@@ -1,11 +1,15 @@
 package com.example.member.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.member.domain.Member;
 import com.example.member.domain.MemberExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
-public interface MemberMapper {
+import java.util.List;
+
+@Repository
+public interface MemberMapper extends BaseMapper<Member> {
     long countByExample(MemberExample example);
 
     int deleteByExample(MemberExample example);
