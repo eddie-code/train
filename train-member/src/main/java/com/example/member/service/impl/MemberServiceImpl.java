@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.member.domain.Member;
 import com.example.member.mapper.MemberMapper;
+import com.example.member.req.MemberRegisterReq;
 import com.example.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public long register(String mobile) {
+    public long register(MemberRegisterReq req) {
+
+        String mobile = req.getMobile();
 
         QueryWrapper<Member> queryWrapper = new QueryWrapper<>();
         queryWrapper.and(wrapper -> wrapper.eq("mobile", mobile));
