@@ -1,5 +1,6 @@
 package com.example.member.req;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
 
@@ -11,7 +12,7 @@ import lombok.ToString;
 @ToString
 public class MemberRegisterReq {
 
-//    @NotBlank(message = "【手机号】不能为空")
+    @NotBlank(message = "手机号不能为空")
     private String mobile;
 
 }
