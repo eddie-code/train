@@ -2,18 +2,18 @@ package com.example.common.exception;
 
 public class BusinessException extends RuntimeException {
 
-    private BusinessExceptionEnum e;
+    private BusinessExceptionEnum businessExceptionEnum;
 
-    public BusinessException(BusinessExceptionEnum e) {
-        this.e = e;
+    public BusinessException(BusinessExceptionEnum businessExceptionEnum) {
+        this.businessExceptionEnum = businessExceptionEnum;
     }
 
-    public BusinessExceptionEnum getE() {
-        return e;
+    public BusinessExceptionEnum getBusinessExceptionEnum() {
+        return businessExceptionEnum;
     }
 
-    public void setE(BusinessExceptionEnum e) {
-        this.e = e;
+    public void setBusinessExceptionEnum(BusinessExceptionEnum businessExceptionEnum) {
+        this.businessExceptionEnum = businessExceptionEnum;
     }
 
     /**

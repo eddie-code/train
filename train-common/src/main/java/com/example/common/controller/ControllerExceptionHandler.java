@@ -1,5 +1,6 @@
 package com.example.common.controller;
 
+import com.example.common.exception.BusinessException;
 import com.example.common.resp.CommonResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,20 +36,20 @@ public class ControllerExceptionHandler {
         return commonResp;
     }
 
-//    /**
-//     * 业务异常统一处理
-//     * @param e
-//     * @return
-//     */
-//    @ExceptionHandler(value = BusinessException.class)
-//    @ResponseBody
-//    public CommonResp exceptionHandler(BusinessException e) {
-//        CommonResp commonResp = new CommonResp();
-//        LOG.error("业务异常：{}", e.getE().getDesc());
-//        commonResp.setSuccess(false);
-//        commonResp.setMessage(e.getE().getDesc());
-//        return commonResp;
-//    }
+    /**
+     * 业务异常统一处理
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = BusinessException.class)
+    @ResponseBody
+    public CommonResp exceptionHandler(BusinessException e) {
+        CommonResp commonResp = new CommonResp();
+        LOG.error("业务异常：{}", e.getBusinessExceptionEnum().getDesc());
+        commonResp.setSuccess(false);
+        commonResp.setMessage(e.getBusinessExceptionEnum().getDesc());
+        return commonResp;
+    }
 //
 //    /**
 //     * 校验异常统一处理
