@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.common.exception.BusinessException;
 import com.example.common.exception.BusinessExceptionEnum;
+import com.example.common.util.SnowUtil;
 import com.example.member.domain.Member;
 import com.example.member.mapper.MemberMapper;
 import com.example.member.req.MemberRegisterReq;
@@ -45,7 +46,8 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = new Member();
 //        member.setId(System.currentTimeMillis());
-        member.setId(1L);
+//        member.setId(1L);
+        member.setId(SnowUtil.getSnowflakeNextId());
         member.setMobile(mobile);
         memberMapper.insert(member);
         return member.getId();
