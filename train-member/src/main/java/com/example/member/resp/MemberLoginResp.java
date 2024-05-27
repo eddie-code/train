@@ -1,0 +1,20 @@
+package com.example.member.resp;
+
+import lombok.Data;
+import lombok.ToString;
+
+/**
+ * @author lee
+ * @description
+ */
+@Data
+@ToString
+public class MemberLoginResp {
+
+    private Long id;
+
+    private String mobile;
+
+    private String token;
+
+}
