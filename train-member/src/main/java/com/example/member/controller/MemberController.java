@@ -2,6 +2,7 @@ package com.example.member.controller;
 
 import com.example.common.resp.CommonResp;
 import com.example.member.req.MemberRegisterReq;
+import com.example.member.req.MemberSendCodeReq;
 import com.example.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,12 @@ public class MemberController {
 //        commonResp.setContent(register);
 //        return commonResp;
         return new CommonResp<>(register);
+    }
+
+    @PostMapping("/send-code")
+    public CommonResp<Long>  sendCode(@Valid MemberSendCodeReq req) {
+        memberService.sendCode(req);
+        return new CommonResp<>();
     }
 
 }
