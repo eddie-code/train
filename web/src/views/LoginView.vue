@@ -51,13 +51,13 @@
 import { defineComponent, reactive } from 'vue';
 import axios from 'axios'; // npm install axios
 import { notification } from 'ant-design-vue'; // 页面弹框的通知组件
-// import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router' // 路由跳转组件
 // import store from "@/store";
 
 export default defineComponent({
     name: "login-view",
     setup() {
-        // const router = useRouter();
+        const router = useRouter(); // 路由跳转
 
         // login 表单提交参数封装
         const loginForm = reactive({
@@ -87,7 +87,8 @@ export default defineComponent({
                 let data = response.data;
                 if (data.success) {
                     notification.success({ description: '登录成功！' });
-                    // console.log("登录成功！")
+                    console.log("登录成功！")
+                    router.push("/");
                     // 登录成功，跳到控台主页
                     // router.push("/welcome");
                     // store.commit("setMember", data.content);
