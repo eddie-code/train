@@ -66,9 +66,8 @@ export default defineComponent({
         });
 
         const sendCode = () => {
-
-            axios.post("http://localhost:8000/member/member/send-code", {
-                // axios.post("/member/member/send-code", {
+            // axios.post("http://localhost:8000/member/member/send-code", {
+                axios.post("/member/member/send-code", {
                 mobile: loginForm.mobile // 传递参数
             }).then(response => {
                 let data = response.data;  // 后端返回的数据, 等于后端的 CommonResp
@@ -83,8 +82,8 @@ export default defineComponent({
 
         const login = () => {
             // 不同的传递参数写法： loginForm 就是上面的函数方法, 与 sendCode 的传递方式不同
-            axios.post("http://localhost:8000/member/member/login", loginForm).then((response) => {
-            // axios.post("/member/member/login", loginForm).then((response) => {
+            // axios.post("http://localhost:8000/member/member/login", loginForm).then((response) => {
+            axios.post("/member/member/login", loginForm).then((response) => {
                 let data = response.data;
                 if (data.success) {
                     notification.success({ description: '登录成功！' });
