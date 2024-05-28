@@ -39,8 +39,7 @@
                 </a-form-item>
 
                 <a-form-item>
-                    <a-button type="primary" block html-type="submit">登录</a-button>
-<!--                    <a-button type="primary" block @click="login">登录</a-button>-->
+                    <a-button type="primary" block @click="login">登录</a-button>
                 </a-form-item>
 
             </a-form>
@@ -51,7 +50,7 @@
 <script>
 import { defineComponent, reactive } from 'vue';
 import axios from 'axios'; // npm install axios
-// import { notification } from 'ant-design-vue';
+import { notification } from 'ant-design-vue'; // 页面弹框的通知组件
 // import { useRouter } from 'vue-router'
 // import store from "@/store";
 
@@ -60,61 +59,49 @@ export default defineComponent({
     setup() {
         // const router = useRouter();
 
+        // login 表单提交参数封装
         const loginForm = reactive({
             mobile: '13800138000',
             code: '',
         });
 
-        // 对应页面的处理成功的方法
-        const onFinish = values => {
-            console.log('Success:', values);
-        };
-        // 对应页面的处理失败的方法
-        const onFinishFailed = errorInfo => {
-            console.log('Failed:', errorInfo);
-        };
-
         const sendCode = () => {
 
             axios.post("http://localhost:8000/member/member/send-code", {
-                mobile: loginForm.mobile
+                // axios.post("/member/member/send-code", {
+                mobile: loginForm.mobile // 传递参数
             }).then(response => {
-                console.log(response);
+                let data = response.data;  // 后端返回的数据, 等于后端的 CommonResp
+                if (data.success) {
+                    notification.success({description: '发送验证码成功！'});
+                    loginForm.code = "8888"; // 双向绑定, Html就会显示
+                } else {
+                    notification.error({description: data.message});
+                }
             });
-
-            // axios.post("/member/member/send-code", {
-            //     mobile: loginForm.mobile
-            // }).then(response => {
-                // let data = response.data;
-                // if (data.success) {
-                //     notification.success({ description: '发送验证码成功！' });
-                //     loginForm.code = "8888";
-                // } else {
-                //     notification.error({ description: data.message });
-                // }
         };
 
-        // const login = () => {
-        //     axios.post("/member/member/login", loginForm).then((response) => {
-        //         let data = response.data;
-        //         if (data.success) {
-        //             notification.success({ description: '登录成功！' });
-        //             // 登录成功，跳到控台主页
-        //             router.push("/welcome");
-        //             store.commit("setMember", data.content);
-        //         } else {
-        //             notification.error({ description: data.message });
-        //         }
-        //     })
-        // };
+        const login = () => {
+            // 不同的传递参数写法： loginForm 就是上面的函数方法, 与 sendCode 的传递方式不同
+            axios.post("http://localhost:8000/member/member/login", loginForm).then((response) => {
+            // axios.post("/member/member/login", loginForm).then((response) => {
+                let data = response.data;
+                if (data.success) {
+                    notification.success({ description: '登录成功！' });
+                    // 登录成功，跳到控台主页
+                    // router.push("/welcome");
+                    // store.commit("setMember", data.content);
+                } else {
+                    notification.error({ description: data.message });
+                }
+            })
+        };
 
         // 返回给 Html 调用
         return {
             loginForm,
-            onFinish,
-            onFinishFailed,
             sendCode,
-            // login
+            login
         };
     },
 });
