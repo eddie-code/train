@@ -1,30 +1,18 @@
 <template>
     <a-layout id="components-layout-demo-top-side-2">
-        <a-layout-header class="header">
-            <div class="logo"/>
-            <a-menu
-                    v-model:selectedKeys="selectedKeys1"
-                    theme="dark"
-                    mode="horizontal"
-                    :style="{ lineHeight: '64px' }"
-            >
-                <a-menu-item key="1">nav 1</a-menu-item>
-                <a-menu-item key="2">nav 2</a-menu-item>
-                <a-menu-item key="3">nav 3</a-menu-item>
-            </a-menu>
-        </a-layout-header>
+        <HeaderComponents/>
         <a-layout>
             <a-layout-sider width="200" style="background: #fff">
                 <a-menu
+                        mode="inline"
                         v-model:selectedKeys="selectedKeys2"
                         v-model:openKeys="openKeys"
-                        mode="inline"
                         :style="{ height: '100%', borderRight: 0 }"
                 >
                     <a-sub-menu key="sub1">
                         <template #title>
               <span>
-                <user-outlined/>
+                <user-outlined />
                 subnav 1
               </span>
                         </template>
@@ -36,7 +24,7 @@
                     <a-sub-menu key="sub2">
                         <template #title>
               <span>
-                <laptop-outlined/>
+                <laptop-outlined />
                 subnav 2
               </span>
                         </template>
@@ -48,7 +36,7 @@
                     <a-sub-menu key="sub3">
                         <template #title>
               <span>
-                <notification-outlined/>
+                <notification-outlined />
                 subnav 3
               </span>
                         </template>
@@ -74,14 +62,28 @@
         </a-layout>
     </a-layout>
 </template>
-<script setup>
-import {ref} from 'vue';
-
-const selectedKeys1 = ref(['2']);
-const selectedKeys2 = ref(['1']);
-const openKeys = ref(['sub1']);
+<script>
+import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
+import { defineComponent, ref } from 'vue';
+import HeaderComponents from "@/components/Header.vue";
+export default defineComponent({
+    components: {
+        HeaderComponents,
+        UserOutlined,
+        LaptopOutlined,
+        NotificationOutlined,
+    },
+    setup() {
+        return {
+            selectedKeys1: ref(['2']),
+            selectedKeys2: ref(['1']),
+            collapsed: ref(false),
+            openKeys: ref(['sub1']),
+        };
+    },
+});
 </script>
-<style scoped>
+<style>
 #components-layout-demo-top-side-2 .logo {
     float: left;
     width: 120px;
