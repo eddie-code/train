@@ -15,6 +15,9 @@ public class MemberLoginResp {
 
     private String mobile;
 
+    /**
+     * jwt token
+     */
     private String token;
 
 }
