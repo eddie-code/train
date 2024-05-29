@@ -4,10 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
-import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.common.exception.BusinessException;
 import com.example.common.exception.BusinessExceptionEnum;
+import com.example.common.util.JwtUtil;
 import com.example.common.util.SnowUtil;
 import com.example.member.domain.Member;
 import com.example.member.mapper.MemberMapper;
@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author lee
@@ -108,9 +107,10 @@ public class MemberServiceImpl implements MemberService {
         }
 
         MemberLoginResp memberLoginResp = BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
-        Map<String, Object> map = BeanUtil.beanToMap(memberLoginResp);
-        String key = "eddie";
-        String token = JWTUtil.createToken(map, key.getBytes());
+//        Map<String, Object> map = BeanUtil.beanToMap(memberLoginResp);
+//        String key = "eddie";
+//        String token = JWTUtil.createToken(map, key.getBytes());
+        String token = JwtUtil.createToken(memberLoginResp.getId(), memberLoginResp.getMobile());
         memberLoginResp.setToken(token);
         log.info("用户登录信息: {}", JSONUtil.toJsonStr(memberLoginResp));
 
