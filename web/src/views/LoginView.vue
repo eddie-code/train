@@ -48,6 +48,7 @@
 </template>
 
 <script>
+// reactive 用来声明对象或对象数组
 import { defineComponent, reactive } from 'vue';
 import axios from 'axios'; // npm install axios
 import { notification } from 'ant-design-vue'; // 页面弹框的通知组件

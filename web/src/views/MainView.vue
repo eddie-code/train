@@ -12,23 +12,40 @@
                 <a-layout-content
                         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
                 >
-                    Content
+                    所有会员总数：{{count}}
                 </a-layout-content>
             </a-layout>
         </a-layout>
     </a-layout>
 </template>
 <script>
-import { defineComponent } from 'vue';
+// ref 用来声明基本的数据类型
+import {defineComponent, ref} from 'vue';
 import HeaderComponents from "@/components/Header.vue";
 import SiderComponents from "@/components/Sider.vue";
+import axios from "axios";
+import {notification} from "ant-design-vue";
+
 export default defineComponent({
     components: {
         SiderComponents,
         HeaderComponents,
     },
     setup() {
+        // 页面打开的时候, 就查询会员的数量
+        const count = ref(0);
+        axios.get("/member/member/count").then((response) => {
+            let data = response.data;
+            if (data.success) {
+                count.value = data.content;
+            } else {
+                notification.error({description: data.message});
+            }
+        })
+
+        // 返回给html
         return {
+            count,
         };
     },
 });

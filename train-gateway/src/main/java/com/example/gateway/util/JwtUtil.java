@@ -23,13 +23,14 @@ public class JwtUtil {
     /**
      * 盐值很重要，不能泄漏，且每个项目都应该不一样，可以放到配置文件中
      */
-    private static final String key = "Jiawa12306";
+    private static final String key = "eddie13800138000";
 
     public static String createToken(Long id, String mobile) {
         LOG.info("开始生成JWT token，id：{}，mobile：{}", id, mobile);
         GlobalBouncyCastleProvider.setUseBouncyCastle(false);
         DateTime now = DateTime.now();
         DateTime expTime = now.offsetNew(DateField.HOUR, 24);
+//        DateTime expTime = now.offsetNew(DateField.SECOND, 10); // 30秒后过期
         Map<String, Object> payload = new HashMap<>();
         // 签发时间
         payload.put(JWTPayload.ISSUED_AT, now);
@@ -69,5 +70,12 @@ public class JwtUtil {
         payloads.remove(JWTPayload.NOT_BEFORE);
         LOG.info("根据token获取原始内容：{}", payloads);
         return payloads;
+    }
+
+    public static void main(String[] args) {
+//        String token = createToken(1716619065823L, "13800138000");
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MTcwNTU5MjIsIm1vYmlsZSI6IjEzODAwMTM4MDAwIiwiaWQiOjE3MTY2MTkwNjU4MjMsImV4cCI6MTcxNzE0MjMyMiwiaWF0IjoxNzE3MDU1OTIyfQ.yMjvgZFQO0JPXhgQOhQqsJevAIHppLbTQDw2MmAStNQ";
+        validate(token);
+        getJSONObject(token);
     }
 }
