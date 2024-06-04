@@ -2,6 +2,7 @@ package com.example.member.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import com.example.common.context.LoginMemberContext;
 import com.example.common.util.SnowUtil;
 import com.example.member.domain.Passenger;
 import com.example.member.mapper.PassengerMapper;
@@ -24,10 +25,13 @@ public class PassengerServiceImpl implements PassengerService {
     public void save(PassengerSaveReq req) {
         DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(req, Passenger.class);
+        // 1. 获取当前登录用户的id
+        passenger.setMemberId(LoginMemberContext.getId());
         passenger.setId(SnowUtil.getSnowflakeNextId());
         passenger.setCreateTime(now);
         passenger.setUpdateTime(now);
         passengerMapper.insert(passenger);
+        LoginMemberContext.remove();
     }
 
 }
