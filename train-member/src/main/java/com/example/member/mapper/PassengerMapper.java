@@ -1,11 +1,15 @@
 package com.example.member.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.member.domain.Passenger;
 import com.example.member.domain.PassengerExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
-public interface PassengerMapper {
+import java.util.List;
+
+@Repository
+public interface PassengerMapper  extends BaseMapper<Passenger> {
     long countByExample(PassengerExample example);
 
     int deleteByExample(PassengerExample example);
