@@ -1,6 +1,8 @@
 <template>
     <a-layout-sider width="200" style="background: #fff">
+
         <a-menu
+                v-model:selectedKeys="selectedKeys"
                 mode="inline"
                 :style="{ height: '100%', borderRight: 0 }"
         >
@@ -15,19 +17,31 @@
                 </router-link>
             </a-menu-item>
         </a-menu>
+
     </a-layout-sider>
 </template>
 
 <script>
-import {defineComponent, ref} from 'vue';
+import {defineComponent, ref, watch} from 'vue';
+import router from "@/router";
 
 export default defineComponent({
     name: "sider-components",
     setup() {
 
+        // 响应式变量：选中的菜单项
+        const selectedKeys = ref([]);
+
+        // 监听路由变化，将路由的path赋值给selectedKeys
+        watch(() => router.currentRoute.value.path, (newValue) => {
+            console.log('watch', newValue);
+            selectedKeys.value = [];
+            selectedKeys.value.push(newValue);
+        }, {immediate: true});
+
+        // 返回响应式变量
         return {
-            selectedKeys2: ref(['1']),
-            openKeys: ref(['sub1']),
+            selectedKeys
         };
     },
 });

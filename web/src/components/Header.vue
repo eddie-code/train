@@ -10,6 +10,7 @@
         </div>
 
         <a-menu
+                v-model:selectedKeys="selectedKeys"
                 theme="dark"
                 mode="horizontal"
                 :style="{ lineHeight: '64px' }"
@@ -31,19 +32,29 @@
 
 <script>
 // vue3写法
-import {defineComponent, ref} from 'vue';
+import {defineComponent, ref, watch} from 'vue';
 import store from "@/store";
+import router from '@/router'
 
 export default defineComponent({
     name: "header-components",
     setup() {
         // 因为header只是显示，不会修改member, 所以声明称普通变量就可以，不需要响应式变量
         let member = store.state.member;
+        // 响应式变量：选中的菜单项
+        const selectedKeys = ref([]);
+
+        // 监听路由变化，将路由的path赋值给selectedKeys
+        watch(() => router.currentRoute.value.path, (newValue) => {
+            console.log('watch', newValue);
+            selectedKeys.value = [];
+            selectedKeys.value.push(newValue);
+        }, {immediate: true});
 
         // 返回给 Html 调用
         return {
-            selectedKeys1: ref(['2']),
-            member
+            member,
+            selectedKeys
         };
     },
 });
