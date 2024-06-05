@@ -22,6 +22,8 @@
 <script>
 
 import {defineComponent, ref, reactive} from 'vue';
+import {notification} from "ant-design-vue";
+import axios from "axios";
 
 export default defineComponent({
     name: "passenger-view",
@@ -40,10 +42,18 @@ export default defineComponent({
         const showModal = () => {
             visible.value = true;
         };
-        const handleOk = e => {
-            console.log(e)
-            visible.value = false;
-        }
+        const handleOk = () => {
+            axios.post("/member/passenger/save", passenger).then((response) => {
+                let data = response.data;
+                if (data.success) {
+                    notification.success({description: "保存成功！"});
+                    visible.value = false; // 保存成功后关闭模态框
+                } else {
+                    notification.error({description: data.message});
+                }
+            });
+        };
+
         return {
             passenger,
             visible,
