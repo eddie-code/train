@@ -14,9 +14,17 @@ const routes = [
         meta: {
             // 是否需要登录校验
             loginRequire: true
-        }
-    }
-]
+        },
+        // 二级路由（又称为子路由）
+        children: [{
+            path: 'welcome',
+            component: () => import('../views/main/WelcomeView.vue'),
+        }]
+    }, {
+        // 当直接访问域名，重定向到欢迎页
+        path: '',
+        redirect: '/welcome'
+    }];
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
@@ -30,13 +38,13 @@ router.beforeEach((to, from, next) => {
         console.log(item, "是否需要登录校验：", item.meta.loginRequire || false);
         return item.meta.loginRequire
     }))
-    // item.meta.loginRequire 为true时，进行登录校验, 否则直接放行
+        // item.meta.loginRequire 为true时，进行登录校验, 否则直接放行
     {
         const _member = store.state.member;
         console.log("页面登录校验开始：", _member);
         if (!_member.token) {
             console.log("用户未登录或登录超时！");
-            notification.error({ description: "未登录或登录超时" });
+            notification.error({description: "未登录或登录超时"});
             next('/login');
         } else {
             next();

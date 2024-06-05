@@ -90,7 +90,7 @@ export default defineComponent({
                 if (data.success) {
                     notification.success({ description: '登录成功！' });
                     console.log("登录成功！")
-                    router.push("/");
+                    router.push("/welcome");
                     // 登录成功，跳到控台主页
                     // router.push("/welcome");
 
