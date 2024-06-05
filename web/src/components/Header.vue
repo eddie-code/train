@@ -2,22 +2,30 @@
     <a-layout-header class="header">
         <div class="logo"/>
         <div style="float: right; color: white;"> <!-- 白色, 居右显示 -->
-            您好：{{member.mobile}} &nbsp;&nbsp;&nbsp; <!-- 显示登陆手机号 -->
+            您好：{{ member.mobile }} &nbsp;&nbsp;&nbsp; <!-- 显示登陆手机号 -->
             <!-- 使用 router-link标签 + to来跳转到 login 页面, 相当于 a 标签的 href -->
             <router-link to="/login" style="color: white;">
                 退出登录 <!-- 显示退出登录按钮 -->
             </router-link>
         </div>
+
         <a-menu
-                v-model:selectedKeys="selectedKeys1"
                 theme="dark"
                 mode="horizontal"
                 :style="{ lineHeight: '64px' }"
         >
-            <a-menu-item key="1">nav 111</a-menu-item>
-            <a-menu-item key="2">nav 2</a-menu-item>
-            <a-menu-item key="3">nav 3</a-menu-item>
+            <a-menu-item key="/welcome">
+                <router-link to="/welcome">
+                    <coffee-outlined/> &nbsp; 欢迎
+                </router-link>
+            </a-menu-item>
+            <a-menu-item key="/passenger">
+                <router-link to="/passenger">
+                    <user-outlined/> &nbsp; 乘车人管理
+                </router-link>
+            </a-menu-item>
         </a-menu>
+
     </a-layout-header>
 </template>
 
