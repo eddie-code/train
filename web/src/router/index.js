@@ -19,6 +19,9 @@ const routes = [
         children: [{
             path: 'welcome',
             component: () => import('../views/main/WelcomeView.vue'),
+        }, {
+            path: 'passenger',
+            component: () => import('../views/main/PassengerView.vue'),
         }]
     }, {
         // 当直接访问域名，重定向到欢迎页
