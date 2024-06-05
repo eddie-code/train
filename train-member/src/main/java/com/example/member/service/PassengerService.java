@@ -1,10 +1,9 @@
 package com.example.member.service;
 
+import com.example.common.resp.PageResp;
 import com.example.member.req.PassengerQueryReq;
 import com.example.member.req.PassengerSaveReq;
 import com.example.member.resp.PassengerQueryResp;
-
-import java.util.List;
 
 /**
  * @author lee
@@ -14,6 +13,6 @@ public interface PassengerService {
 
     void save(PassengerSaveReq req);
 
-    List<PassengerQueryResp> queryList(PassengerQueryReq resp);
+    PageResp<PassengerQueryResp> queryList(PassengerQueryReq resp);
 
 }
