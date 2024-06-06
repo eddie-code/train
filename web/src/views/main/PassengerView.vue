@@ -2,7 +2,7 @@
     <p>
         <a-button type="primary" @click="showModal">新增</a-button>
     </p>
-    <a-table :dataSource="passengers" :columns="columns"/>
+    <a-table :dataSource="passengers" :columns="columns" :pagination="pagination"/>
     <a-modal v-model:visible="visible" title="乘车人" @ok="handleOk" ok-text="确认" cancel-text="取消">
         <a-form :model="passenger" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
             <a-form-item label="姓名">
@@ -45,6 +45,13 @@ export default defineComponent({
         });
 
         const passengers = ref([]);
+
+        // 分页的三个属性名是固定的
+        const pagination = reactive({
+            total: 0,
+            current: 1,
+            pageSize: 2,
+        });
 
         const columns = [
             {
@@ -89,6 +96,7 @@ export default defineComponent({
                 let data = response.data;
                 if (data.success) {
                     passengers.value = data.content.list;
+                    pagination.total = data.content.total;
                 } else {
                     notification.error({description: data.message});
                 }
@@ -108,6 +116,7 @@ export default defineComponent({
             showModal,
             handleOk,
             passengers,
+            pagination,
             columns
         };
     },
