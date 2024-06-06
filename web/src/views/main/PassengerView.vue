@@ -9,6 +9,7 @@
              :columns="columns"
              :pagination="pagination"
              @change="handleTableChange"
+             :loading="loading"
     />
     <a-modal v-model:visible="visible" title="乘车人" @ok="handleOk" ok-text="确认" cancel-text="取消">
         <a-form :model="passenger" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
@@ -60,6 +61,8 @@ export default defineComponent({
             pageSize: 2,
         });
 
+        let loading = ref(false);
+
         const columns = [
             {
                 title: '姓名',
@@ -99,6 +102,7 @@ export default defineComponent({
                     size: pagination.pageSize
                 };
             }
+            loading.value = true;
             axios.get("/member/passenger/query-list", {
                 // axios的GET请求参数, 固定放在 params 对象里
                 params: {
@@ -106,6 +110,7 @@ export default defineComponent({
                     size: param.size
                 }
             }).then((response) => {
+                loading.value = false;
                 let data = response.data;
                 if (data.success) {
                     passengers.value = data.content.list;
@@ -142,7 +147,8 @@ export default defineComponent({
             pagination,
             columns,
             handleTableChange,
-            handleQuery
+            handleQuery,
+            loading
         };
     },
 });
