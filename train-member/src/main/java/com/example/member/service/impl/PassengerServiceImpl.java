@@ -51,7 +51,7 @@ public class PassengerServiceImpl implements PassengerService {
         if (ObjectUtil.isNotNull(req.getMemberId())) {
             queryWrapper.lambda()
                     .eq(Passenger::getMemberId, req.getMemberId())
-                    .orderByDesc(Passenger::getCreateTime);
+                    .orderByDesc(Passenger::getId);
         }
 
         log.info("查询页码：{}", req.getPage());
