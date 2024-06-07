@@ -33,7 +33,7 @@ public class ServerGenerator {
 //        System.out.println("servicePath: " + serverPath);
 //
         // 读取table节点
-        Document document = new SAXReader().read("generator/" + generatorPath);
+        Document document = new SAXReader().read("train-generator/" + generatorPath);
         Node table = document.selectSingleNode("//table");
         System.out.println(table);
         Node tableName = table.selectSingleNode("@tableName");
