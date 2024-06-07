@@ -61,11 +61,7 @@ export default defineComponent({
     name: "passenger-view",
     setup() {
 
-        const PASSENGER_TYPE_ARRAY = [
-            {key: "1", value: "成人"},
-            {key: "2", value: "儿童"},
-            {key: "3", value: "老人"},
-        ];
+        const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY;
 
         const visible = ref(false);
 
