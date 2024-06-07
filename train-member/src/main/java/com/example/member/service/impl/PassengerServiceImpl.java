@@ -78,4 +78,8 @@ public class PassengerServiceImpl implements PassengerService {
         return pageResp;
     }
 
+    @Override
+    public void delete(Long id) {
+        passengerMapper.deleteById(id);
+    }
 }
