@@ -14,3 +14,17 @@ token: {{token-v}}
 GET http://localhost:8000/member/passenger/query-list?page=2&size=200
 Accept: application/json
 token: {{token-v}}
+
+###
+
+POST http://localhost:8000/member/passenger/save
+Content-Type: application/json
+token: {{token-v}}
+
+{
+  "id":1798242915424800768,
+  "memberId":1716619065823,
+  "name":"zhangsan123",
+  "idCard":"440105199108171234",
+  "type":"1"
+}
