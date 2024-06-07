@@ -42,6 +42,8 @@ public class PassengerSaveReq {
 
     /**
      * 新增时间
+     * 在列表查询功能里, 前端得到的日期值, 其实是字符串, 后端保存接口里, 必需按这个格式转回日期
+     * Date + @JsonFormat()
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
