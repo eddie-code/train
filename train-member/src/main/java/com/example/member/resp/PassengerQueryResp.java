@@ -18,7 +18,7 @@ public class PassengerQueryResp {
     /**
      * id
      */
-    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class) // 解决vue前端或者的时候 Long类型不全问题, 转为字符串
     private Long id;
 
     /**
