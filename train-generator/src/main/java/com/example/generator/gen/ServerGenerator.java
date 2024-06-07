@@ -1,6 +1,5 @@
 package com.example.generator.gen;
 
-import com.example.generator.util.DbUtil;
 import com.example.generator.util.Field;
 import com.example.generator.util.FreemarkerUtil;
 import freemarker.template.TemplateException;
@@ -17,7 +16,7 @@ public class ServerGenerator {
     static boolean readOnly = false;
     static String vuePath = "admin/src/views/main/";
     static String serverPath = "[module]/src/main/java/com/example/[module]/";
-    static String pomPath = "generator/pom.xml";
+    static String pomPath = "train-generator/pom.xml";
     static String module = "";
     // static {
     //     new File(serverPath).mkdirs();
@@ -27,12 +26,12 @@ public class ServerGenerator {
         // 获取mybatis-generator
         String generatorPath = getGeneratorPath();
         // 比如generator-config-member.xml，得到module = member
-        module = generatorPath.replace("src/main/resources/generator-config-", "").replace(".xml", "");
-        System.out.println("module: " + module);
-        serverPath = serverPath.replace("[module]", module);
-        new File(serverPath).mkdirs();
-        System.out.println("servicePath: " + serverPath);
-
+//        module = generatorPath.replace("src/main/resources/generator-config-", "").replace(".xml", "");
+//        System.out.println("module: " + module);
+//        serverPath = serverPath.replace("[module]", module);
+//        new File(serverPath).mkdirs();
+//        System.out.println("servicePath: " + serverPath);
+//
         // 读取table节点
         Document document = new SAXReader().read("generator/" + generatorPath);
         Node table = document.selectSingleNode("//table");
@@ -40,49 +39,49 @@ public class ServerGenerator {
         Node tableName = table.selectSingleNode("@tableName");
         Node domainObjectName = table.selectSingleNode("@domainObjectName");
         System.out.println(tableName.getText() + "/" + domainObjectName.getText());
-
-        // 为DbUtil设置数据源
-        Node connectionURL = document.selectSingleNode("//@connectionURL");
-        Node userId = document.selectSingleNode("//@userId");
-        Node password = document.selectSingleNode("//@password");
-        System.out.println("url: " + connectionURL.getText());
-        System.out.println("user: " + userId.getText());
-        System.out.println("password: " + password.getText());
-        DbUtil.url = connectionURL.getText();
-        DbUtil.user = userId.getText();
-        DbUtil.password = password.getText();
-
-        // 示例：表名 example_test
-        // Domain = ExampleTest
-        String Domain = domainObjectName.getText();
-        // domain = exampleTest
-        String domain = Domain.substring(0, 1).toLowerCase() + Domain.substring(1);
-        // do_main = example-test
-        String do_main = tableName.getText().replaceAll("_", "-");
-        // 表中文名
-        String tableNameCn = DbUtil.getTableComment(tableName.getText());
-        List<Field> fieldList = DbUtil.getColumnByTableName(tableName.getText());
-        Set<String> typeSet = getJavaTypes(fieldList);
-
-        // 组装参数
-        Map<String, Object> param = new HashMap<>();
-        param.put("module", module);
-        param.put("Domain", Domain);
-        param.put("domain", domain);
-        param.put("do_main", do_main);
-        param.put("tableNameCn", tableNameCn);
-        param.put("fieldList", fieldList);
-        param.put("typeSet", typeSet);
-        param.put("readOnly", readOnly);
-        System.out.println("组装参数：" + param);
-
-        gen(Domain, param, "service", "service");
-        gen(Domain, param, "controller/admin", "adminController");
-        gen(Domain, param, "req", "saveReq");
-        gen(Domain, param, "req", "queryReq");
-        gen(Domain, param, "resp", "queryResp");
-
-        genVue(do_main, param);
+//
+//        // 为DbUtil设置数据源
+//        Node connectionURL = document.selectSingleNode("//@connectionURL");
+//        Node userId = document.selectSingleNode("//@userId");
+//        Node password = document.selectSingleNode("//@password");
+//        System.out.println("url: " + connectionURL.getText());
+//        System.out.println("user: " + userId.getText());
+//        System.out.println("password: " + password.getText());
+//        DbUtil.url = connectionURL.getText();
+//        DbUtil.user = userId.getText();
+//        DbUtil.password = password.getText();
+//
+//        // 示例：表名 example_test
+//        // Domain = ExampleTest
+//        String Domain = domainObjectName.getText();
+//        // domain = exampleTest
+//        String domain = Domain.substring(0, 1).toLowerCase() + Domain.substring(1);
+//        // do_main = example-test
+//        String do_main = tableName.getText().replaceAll("_", "-");
+//        // 表中文名
+//        String tableNameCn = DbUtil.getTableComment(tableName.getText());
+//        List<Field> fieldList = DbUtil.getColumnByTableName(tableName.getText());
+//        Set<String> typeSet = getJavaTypes(fieldList);
+//
+//        // 组装参数
+//        Map<String, Object> param = new HashMap<>();
+//        param.put("module", module);
+//        param.put("Domain", Domain);
+//        param.put("domain", domain);
+//        param.put("do_main", do_main);
+//        param.put("tableNameCn", tableNameCn);
+//        param.put("fieldList", fieldList);
+//        param.put("typeSet", typeSet);
+//        param.put("readOnly", readOnly);
+//        System.out.println("组装参数：" + param);
+//
+//        gen(Domain, param, "service", "service");
+//        gen(Domain, param, "controller/admin", "adminController");
+//        gen(Domain, param, "req", "saveReq");
+//        gen(Domain, param, "req", "queryReq");
+//        gen(Domain, param, "resp", "queryResp");
+//
+//        genVue(do_main, param);
     }
 
     private static void gen(String Domain, Map<String, Object> param, String packageName, String target) throws IOException, TemplateException {
@@ -103,6 +102,9 @@ public class ServerGenerator {
         FreemarkerUtil.generator(fileName, param);
     }
 
+    /**
+     * 集成dom4j, 读取pom.xml, 得到当前 train-generator 下的 pom.xml 的 <configurationFile> 标签
+     */
     private static String getGeneratorPath() throws DocumentException {
         SAXReader saxReader = new SAXReader();
         Map<String, String> map = new HashMap<String, String>();
