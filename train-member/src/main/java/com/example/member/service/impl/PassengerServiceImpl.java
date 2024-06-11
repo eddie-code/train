@@ -5,7 +5,6 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.common.context.LoginMemberContext;
 import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
 import com.example.member.domain.Passenger;
@@ -20,10 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author lee
- * @description
- */
 @Slf4j
 @Service
 public class PassengerServiceImpl implements PassengerService {
@@ -36,13 +31,10 @@ public class PassengerServiceImpl implements PassengerService {
         DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(req, Passenger.class);
         if (ObjectUtil.isNull(passenger.getId())) {
-            // 1. 获取当前登录用户的id
-            passenger.setMemberId(LoginMemberContext.getId());
             passenger.setId(SnowUtil.getSnowflakeNextId());
             passenger.setCreateTime(now);
             passenger.setUpdateTime(now);
             passengerMapper.insert(passenger);
-            LoginMemberContext.remove();
         } else {
             passenger.setUpdateTime(now);
             passengerMapper.updateById(passenger);
@@ -53,11 +45,8 @@ public class PassengerServiceImpl implements PassengerService {
     public PageResp<PassengerQueryResp> queryList(PassengerQueryReq req) {
         log.info("查询条件：{}", req);
         QueryWrapper<Passenger> queryWrapper = new QueryWrapper<>();
-        if (ObjectUtil.isNotNull(req.getMemberId())) {
-            queryWrapper.lambda()
-                    .eq(Passenger::getMemberId, req.getMemberId())
-                    .orderByDesc(Passenger::getId);
-        }
+        queryWrapper.lambda()
+            .orderByDesc(Passenger::getId);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
