@@ -78,16 +78,21 @@ public class ServerGenerator {
         param.put("tableNameCn", tableNameCn);
         param.put("fieldList", fieldList);
         param.put("typeSet", typeSet);
-        param.put("readOnly", readOnly);
+//        param.put("readOnly", readOnly);
         System.out.println("组装参数：" + param);
-//
+
+        /**
+         * ====================
+         *   按需选择生成的模块
+         * ====================
+         */
 //        gen(Domain, param, "service", "service");
 //        gen(Domain, param, "service/impl", "serviceImpl");
 //        gen(Domain, param, "controller", "controller");
 //        gen(Domain, param, "controller/admin", "adminController");
         gen(Domain, param, "req", "saveReq");
-//        gen(Domain, param, "req", "queryReq");
-//        gen(Domain, param, "resp", "queryResp");
+        gen(Domain, param, "req", "queryReq");
+        gen(Domain, param, "resp", "queryResp");
 //
 //        genVue(do_main, param);
     }
