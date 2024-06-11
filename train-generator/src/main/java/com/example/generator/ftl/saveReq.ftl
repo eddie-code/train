@@ -1,24 +1,28 @@
 package com.example.${module}.req;
 
 <#list typeSet as type>
-<#if type=='Date'>
+    <#if type=='Date'>
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-</#if>
-<#if type=='BigDecimal'>
+    </#if>
+    <#if type=='BigDecimal'>
 import java.math.BigDecimal;
-</#if>
+    </#if>
 </#list>
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.ToString;
 
+@Data
+@ToString
 public class ${Domain}SaveReq {
 
-    <#list fieldList as field>
+<#list fieldList as field>
     /**
-     * ${field.comment}
-     */
+    * ${field.comment}
+    */
     <#if field.javaType=='Date'>
         <#if field.type=='time'>
     @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
@@ -39,27 +43,27 @@ public class ${Domain}SaveReq {
     </#if>
     private ${field.javaType} ${field.nameHump};
 
-    </#list>
-    <#list fieldList as field>
-    public ${field.javaType} get${field.nameBigHump}() {
-        return ${field.nameHump};
-    }
+</#list>
+<#--<#list fieldList as field>-->
+<#--    public ${field.javaType} get${field.nameBigHump}() {-->
+<#--    return ${field.nameHump};-->
+<#--    }-->
 
-    public void set${field.nameBigHump}(${field.javaType} ${field.nameHump}) {
-        this.${field.nameHump} = ${field.nameHump};
-    }
+<#--    public void set${field.nameBigHump}(${field.javaType} ${field.nameHump}) {-->
+<#--    this.${field.nameHump} = ${field.nameHump};-->
+<#--    }-->
 
-    </#list>
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        <#list fieldList as field>
-        sb.append(", ${field.nameHump}=").append(${field.nameHump});
-        </#list>
-        sb.append("]");
-        return sb.toString();
-    }
+<#--</#list>-->
+<#--@Override-->
+<#--public String toString() {-->
+<#--StringBuilder sb = new StringBuilder();-->
+<#--sb.append(getClass().getSimpleName());-->
+<#--sb.append(" [");-->
+<#--sb.append("Hash = ").append(hashCode());-->
+<#--<#list fieldList as field>-->
+<#--    sb.append(", ${field.nameHump}=").append(${field.nameHump});-->
+<#--</#list>-->
+<#--sb.append("]");-->
+<#--return sb.toString();-->
+<#--}-->
 }

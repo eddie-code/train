@@ -67,7 +67,7 @@ public class ServerGenerator {
 //        // 表中文名
         String tableNameCn = DbUtil.getTableComment(tableName.getText());
         List<Field> fieldList = DbUtil.getColumnByTableName(tableName.getText());
-//        Set<String> typeSet = getJavaTypes(fieldList);
+        Set<String> typeSet = getJavaTypes(fieldList);
 
         // 组装参数
         Map<String, Object> param = new HashMap<>();
@@ -75,17 +75,17 @@ public class ServerGenerator {
         param.put("Domain", Domain);
         param.put("domain", domain);
         param.put("do_main", do_main);
-//        param.put("tableNameCn", tableNameCn);
-//        param.put("fieldList", fieldList);
-//        param.put("typeSet", typeSet);
-//        param.put("readOnly", readOnly);
+        param.put("tableNameCn", tableNameCn);
+        param.put("fieldList", fieldList);
+        param.put("typeSet", typeSet);
+        param.put("readOnly", readOnly);
         System.out.println("组装参数：" + param);
 //
-        gen(Domain, param, "service", "service");
-        gen(Domain, param, "service/impl", "serviceImpl");
-        gen(Domain, param, "controller", "controller");
+//        gen(Domain, param, "service", "service");
+//        gen(Domain, param, "service/impl", "serviceImpl");
+//        gen(Domain, param, "controller", "controller");
 //        gen(Domain, param, "controller/admin", "adminController");
-//        gen(Domain, param, "req", "saveReq");
+        gen(Domain, param, "req", "saveReq");
 //        gen(Domain, param, "req", "queryReq");
 //        gen(Domain, param, "resp", "queryResp");
 //
