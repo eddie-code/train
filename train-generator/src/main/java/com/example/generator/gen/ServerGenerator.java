@@ -1,5 +1,6 @@
 package com.example.generator.gen;
 
+import com.example.generator.util.DbUtil;
 import com.example.generator.util.Field;
 import com.example.generator.util.FreemarkerUtil;
 import freemarker.template.TemplateException;
@@ -44,17 +45,17 @@ public class ServerGenerator {
         Node tableName = table.selectSingleNode("@tableName");
         Node domainObjectName = table.selectSingleNode("@domainObjectName");
         System.out.println(tableName.getText() + "/" + domainObjectName.getText());
-//
-//        // 为DbUtil设置数据源
-//        Node connectionURL = document.selectSingleNode("//@connectionURL");
-//        Node userId = document.selectSingleNode("//@userId");
-//        Node password = document.selectSingleNode("//@password");
-//        System.out.println("url: " + connectionURL.getText());
-//        System.out.println("user: " + userId.getText());
-//        System.out.println("password: " + password.getText());
-//        DbUtil.url = connectionURL.getText();
-//        DbUtil.user = userId.getText();
-//        DbUtil.password = password.getText();
+
+        // 为DbUtil设置数据源
+        Node connectionURL = document.selectSingleNode("//@connectionURL");
+        Node userId = document.selectSingleNode("//@userId");
+        Node password = document.selectSingleNode("//@password");
+        System.out.println("url: " + connectionURL.getText());
+        System.out.println("user: " + userId.getText());
+        System.out.println("password: " + password.getText());
+        DbUtil.url = connectionURL.getText();
+        DbUtil.user = userId.getText();
+        DbUtil.password = password.getText();
 
         // 示例：表名 example_test
         // Domain = ExampleTest
@@ -64,8 +65,8 @@ public class ServerGenerator {
         // do_main = example-test
         String do_main = tableName.getText().replaceAll("_", "-");
 //        // 表中文名
-//        String tableNameCn = DbUtil.getTableComment(tableName.getText());
-//        List<Field> fieldList = DbUtil.getColumnByTableName(tableName.getText());
+        String tableNameCn = DbUtil.getTableComment(tableName.getText());
+        List<Field> fieldList = DbUtil.getColumnByTableName(tableName.getText());
 //        Set<String> typeSet = getJavaTypes(fieldList);
 
         // 组装参数

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 原始jdbc连接mysql
+ */
 public class DbUtil {
 
     public static String url = "";
