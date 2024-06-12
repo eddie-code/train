@@ -48,12 +48,12 @@
         </javaModelGenerator>
 
         <!-- mapper xml的位置 targetProject是相对pom.xml的路径 -->
-        <sqlMapGenerator targetProject="../${projectName}/src/main/resources" targetPackage="mapper">
+        <sqlMapGenerator targetProject="../train-member/src/main/resources" targetPackage="mapper">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
         <!-- mapper类的位置 targetProject是相对pom.xml的路径 -->
-        <javaClientGenerator targetProject="../${projectName}/src/main/java" targetPackage="com.example.member.mapper" type="XMLMAPPER">
+        <javaClientGenerator targetProject="../train-member/src/main/java" targetPackage="com.example.member.mapper" type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 

@@ -12,7 +12,7 @@
         <property name="endingDelimiter" value="`"/>
 
         <!--覆盖生成XML文件-->
-        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
         <!-- 生成的实体类添加toString()方法 -->
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
 
@@ -29,15 +29,15 @@
         </jdbcConnection>
 
         <!-- domain类的位置 targetProject是相对pom.xml的路径-->
-        <javaModelGenerator targetProject="../business/src/main/java"
+        <javaModelGenerator targetProject="../train-business/src/main/java"
                             targetPackage="com.example.business.domain"/>
 
         <!-- mapper xml的位置 targetProject是相对pom.xml的路径 -->
-        <sqlMapGenerator targetProject="../business/src/main/resources"
+        <sqlMapGenerator targetProject="../train-business/src/main/resources"
                          targetPackage="mapper"/>
 
         <!-- mapper类的位置 targetProject是相对pom.xml的路径 -->
-        <javaClientGenerator targetProject="../business/src/main/java"
+        <javaClientGenerator targetProject="../train-business/src/main/java"
                              targetPackage="com.example.business.mapper"
                              type="XMLMAPPER"/>
 
@@ -52,6 +52,7 @@
         <!--<table tableName="daily_train_seat" domainObjectName="DailyTrainSeat"/>-->
         <!--<table tableName="daily_train_ticket" domainObjectName="DailyTrainTicket"/>-->
         <!--<table tableName="confirm_order" domainObjectName="ConfirmOrder"/>-->
-        <table tableName="sk_token" domainObjectName="SkToken"/>
+        <!--<table tableName="sk_token" domainObjectName="SkToken"/>-->
+        <table tableName="member" domainObjectName="Member"/>
     </context>
 </generatorConfiguration>
