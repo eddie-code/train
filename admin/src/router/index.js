@@ -11,6 +11,9 @@ const routes = [
         }, {
             path: 'about',
             component: () => import('../views/main/AboutView.vue'),
+        }, {
+            path: 'station',
+            component: () => import('../views/main/StationView.vue'),
         }]
     }, {
         // 当直接访问域名，重定向到欢迎页

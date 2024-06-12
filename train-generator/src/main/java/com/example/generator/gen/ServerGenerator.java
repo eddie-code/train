@@ -18,8 +18,8 @@ public class ServerGenerator {
     static boolean readOnly = false;
     static String prefix = "train-";
 
-//    static String vuePath = "admin/src/views/main/";
-    static String vuePath = "web/src/views/main/";
+    static String vuePath = "admin/src/views/main/";
+//    static String vuePath = "web/src/views/main/";
 //    static String serverPath = "[module]/src/main/java/com/example/[module]/";
     static String serverPath = prefix + "[module]/src/main/java/com/example/[module]/";
     static String pomPath = "train-generator/pom.xml";
@@ -89,13 +89,13 @@ public class ServerGenerator {
          *   后端：按需选择生成的模块
          * ====================
          */
-//        gen(Domain, param, "service", "service");
-//        gen(Domain, param, "service/impl", "serviceImpl");
-//        gen(Domain, param, "controller", "controller");
-//        gen(Domain, param, "controller/admin", "adminController");
-//        gen(Domain, param, "req", "saveReq");
-//        gen(Domain, param, "req", "queryReq");
-//        gen(Domain, param, "resp", "queryResp");
+        gen(Domain, param, "service", "service");
+        gen(Domain, param, "service/impl", "serviceImpl");
+        gen(Domain, param, "controller", "controller");
+        gen(Domain, param, "controller/admin", "adminController");
+        gen(Domain, param, "req", "saveReq");
+        gen(Domain, param, "req", "queryReq");
+        gen(Domain, param, "resp", "queryResp");
         /**
          * ====================
          *   前端生成的模块
