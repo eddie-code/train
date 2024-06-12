@@ -1,12 +1,8 @@
 <template>
     <a-layout-header class="header">
         <div class="logo"/>
-        <div style="float: right; color: white;"> <!-- 白色, 居右显示 -->
-            您好：{{ member.mobile }} &nbsp;&nbsp;&nbsp; <!-- 显示登陆手机号 -->
-            <!-- 使用 router-link标签 + to来跳转到 login 页面, 相当于 a 标签的 href -->
-            <router-link to="/login" style="color: white;">
-                退出登录 <!-- 显示退出登录按钮 -->
-            </router-link>
+        <div style="float: right; color: white;">
+            欢迎使用管理控台
         </div>
 
         <a-menu
@@ -20,9 +16,9 @@
                     <coffee-outlined/> &nbsp; 欢迎
                 </router-link>
             </a-menu-item>
-            <a-menu-item key="/passenger">
-                <router-link to="/passenger">
-                    <user-outlined/> &nbsp; 乘车人管理
+            <a-menu-item key="/about">
+                <router-link to="/about">
+                    <user-outlined/> &nbsp; 关于
                 </router-link>
             </a-menu-item>
         </a-menu>
@@ -33,14 +29,12 @@
 <script>
 // vue3写法
 import {defineComponent, ref, watch} from 'vue';
-import store from "@/store";
 import router from '@/router'
 
 export default defineComponent({
     name: "header-components",
     setup() {
-        // 因为header只是显示，不会修改member, 所以声明称普通变量就可以，不需要响应式变量
-        let member = store.state.member;
+
         // 响应式变量：选中的菜单项
         const selectedKeys = ref([]);
 
@@ -53,7 +47,6 @@ export default defineComponent({
 
         // 返回给 Html 调用
         return {
-            member,
             selectedKeys
         };
     },
