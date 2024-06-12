@@ -49,6 +49,7 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!-- 需要获取Member的枚举 -->
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>train-member</artifactId>
