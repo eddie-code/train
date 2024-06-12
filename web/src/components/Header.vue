@@ -1,6 +1,10 @@
 <template>
     <a-layout-header class="header">
-        <div class="logo"/>
+        <div class="logo">
+            <router-link to="/welcome" style="color: white; font-size: 18px">
+                模拟12306控台
+            </router-link>
+        </div>
         <div style="float: right; color: white;"> <!-- 白色, 居右显示 -->
             您好：{{ member.mobile }} &nbsp;&nbsp;&nbsp; <!-- 显示登陆手机号 -->
             <!-- 使用 router-link标签 + to来跳转到 login 页面, 相当于 a 标签的 href -->
@@ -62,5 +66,11 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only (添加“scoped”属性以将CSS仅限于此组件) -->
 <style scoped>
-
+.logo {
+    float: left;
+    height: 31px;
+    width: 150px;
+    color: white;
+    font-size: 20px;
+}
 </style>
