@@ -96,11 +96,10 @@ export default defineComponent({
                     pattern: 'first',
                     toneType: 'none'
                 }).replaceAll(" ", "");
+            } else {
+                station.value.namePinyin = "";
+                station.value.namePy = "";
             }
-            // else {
-            //     station.value.namePinyin = "";
-            //     station.value.namePy = "";
-            // }
         }, {immediate: true});
 
         const onAdd = () => {
