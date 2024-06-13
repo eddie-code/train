@@ -20,6 +20,9 @@ const routes = [
         }, {
             path: 'train-station',
             component: () => import('../views/main/Train-stationView.vue'),
+        }, {
+            path: 'train-carriage',
+            component: () => import('../views/main/Train-carriageView.vue'),
         }]
     }, {
         // 当直接访问域名，重定向到欢迎页
