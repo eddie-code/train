@@ -2,6 +2,7 @@ package com.example.generator.gen;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.example.business.enums.TrainTypeEnum;
 import com.example.member.enums.PassengerTypeEnum;
 
 import java.io.FileOutputStream;
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnumGenerator {
-     static String path = "web/src/assets/js/enums.js";
-//    static String path = "admin/src/assets/js/enums.js";
+//     static String path = "web/src/assets/js/enums.js";
+    static String path = "admin/src/assets/js/enums.js";
 
     public static void main(String[] args) {
         StringBuffer bufferObject = new StringBuffer();
@@ -26,7 +27,7 @@ public class EnumGenerator {
              * 多枚举可以新增一行
              */
             toJson(PassengerTypeEnum.class, bufferObject, bufferArray);
-//            toJson(TrainTypeEnum.class, bufferObject, bufferArray);
+            toJson(TrainTypeEnum.class, bufferObject, bufferArray);
 //            toJson(SeatTypeEnum.class, bufferObject, bufferArray);
 //            toJson(SeatColEnum.class, bufferObject, bufferArray);
 //            toJson(ConfirmOrderStatusEnum.class, bufferObject, bufferArray);

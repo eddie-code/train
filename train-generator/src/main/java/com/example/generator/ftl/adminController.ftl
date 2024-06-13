@@ -7,7 +7,8 @@ import com.example.${module}.req.${Domain}QueryReq;
 import com.example.${module}.req.${Domain}SaveReq;
 import com.example.${module}.resp.${Domain}QueryResp;
 import com.example.${module}.service.${Domain}Service;
-import jakarta.annotation.Resource;
+<#--import jakarta.annotation.Resource;-->
+import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/${do_main}")
 public class ${Domain}AdminController {
 
-    @Resource
+    @Autowired
     private ${Domain}Service ${domain}Service;
 
     @PostMapping("/save")
