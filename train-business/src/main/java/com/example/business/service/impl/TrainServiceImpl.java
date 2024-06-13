@@ -77,7 +77,7 @@ public class TrainServiceImpl implements TrainService {
     @Override
     public List<TrainQueryResp> queryAll() {
         QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().orderByDesc(Train::getCode);
+        queryWrapper.lambda().orderByAsc(Train::getCode);
         List<Train> trainList = trainMapper.selectList(queryWrapper);
         return BeanUtil.copyToList(trainList, TrainQueryResp.class);
     }
