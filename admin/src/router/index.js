@@ -23,6 +23,9 @@ const routes = [
         }, {
             path: 'train-carriage',
             component: () => import('../views/main/Train-carriageView.vue'),
+        }, {
+            path: 'train-seat',
+            component: () => import('../views/main/Train-seatView.vue'),
         }]
     }, {
         // 当直接访问域名，重定向到欢迎页
