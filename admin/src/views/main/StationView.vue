@@ -24,26 +24,26 @@
             </template>
         </template>
     </a-table>
-    <a-modal v-model:visible="visible" title="车站" @ok="handleOk"
-             ok-text="确认" cancel-text="取消">
+    <a-modal v-model:visible="visible" title="车站" @ok="handleOk" ok-text="确认" cancel-text="取消">
         <a-form :model="station" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
             <a-form-item label="站名">
                 <a-input v-model:value="station.name"/>
             </a-form-item>
             <a-form-item label="站名拼音">
-                <a-input v-model:value="station.namePinyin"/>
+                <a-input v-model:value="station.namePinyin" disabled/>
             </a-form-item>
-            <a-form-item label="站名拼音首字母">
-                <a-input v-model:value="station.namePy"/>
+            <a-form-item label="拼音首字母">
+                <a-input v-model:value="station.namePy" disabled/>
             </a-form-item>
         </a-form>
     </a-modal>
 </template>
 
 <script>
-import {defineComponent, ref, onMounted} from 'vue';
+import {defineComponent, ref, onMounted, watch} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
+import {pinyin} from "pinyin-pro";
 
 export default defineComponent({
     name: "station-view",
@@ -87,6 +87,22 @@ export default defineComponent({
             }
         ];
 
+        // http://pinyin-pro.cn/   or   https://github.com/zh-lx/pinyin-pro
+        // 获取表单的 name 值, 当出现变化就执行判断语句
+        watch(() => station.value.name, () => {
+            if (Tool.isNotEmpty(station.value.name)) {
+                station.value.namePinyin = pinyin(station.value.name, {toneType: 'none'}).replaceAll(" ", "");
+                station.value.namePy = pinyin(station.value.name, {
+                    pattern: 'first',
+                    toneType: 'none'
+                }).replaceAll(" ", "");
+            }
+            // else {
+            //     station.value.namePinyin = "";
+            //     station.value.namePy = "";
+            // }
+        }, {immediate: true});
+
         const onAdd = () => {
             station.value = {};
             visible.value = true;
@@ -115,7 +131,7 @@ export default defineComponent({
 
         const handleOk = () => {
             // axios.post("/business/station/save", station.value).then((response) => {
-        axios.post("/business/admin/station/save", station.value).then((response) => {
+            axios.post("/business/admin/station/save", station.value).then((response) => {
                 let data = response.data;
                 if (data.success) {
                     notification.success({description: "保存成功！"});
