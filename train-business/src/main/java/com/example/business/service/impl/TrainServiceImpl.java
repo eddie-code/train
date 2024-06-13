@@ -16,6 +16,7 @@ import com.example.business.service.TrainService;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class TrainServiceImpl implements TrainService {
         log.info("查询条件：{}", req);
         QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-            .orderByDesc(Train::getId);
+                .orderByDesc(Train::getId);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
@@ -71,4 +72,14 @@ public class TrainServiceImpl implements TrainService {
     public void delete(Long id) {
         trainMapper.deleteById(id);
     }
+
+    @Transactional
+    @Override
+    public List<TrainQueryResp> queryAll() {
+        QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().orderByDesc(Train::getCode);
+        List<Train> trainList = trainMapper.selectList(queryWrapper);
+        return BeanUtil.copyToList(trainList, TrainQueryResp.class);
+    }
+
 }
