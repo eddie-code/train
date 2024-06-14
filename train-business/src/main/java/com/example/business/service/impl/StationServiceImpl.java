@@ -71,4 +71,12 @@ public class StationServiceImpl implements StationService {
     public void delete(Long id) {
         stationMapper.deleteById(id);
     }
+
+    @Override
+    public List<StationQueryResp> queryAll() {
+        QueryWrapper<Station> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().orderByAsc(Station::getNamePinyin);
+        List<Station> stationList = stationMapper.selectList(queryWrapper);
+        return BeanUtil.copyToList(stationList, StationQueryResp.class);
+    }
 }
