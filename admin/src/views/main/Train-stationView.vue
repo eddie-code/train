@@ -28,7 +28,7 @@
              ok-text="确认" cancel-text="取消">
         <a-form :model="trainStation" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
             <a-form-item label="车次编号">
-                <TrainSelectComponents v-model="trainStation.trainCode"></TrainSelectComponents>
+                <TrainSelectComponents v-model="trainStation.trainCode" width="50%"></TrainSelectComponents>
             </a-form-item>
             <a-form-item label="站序">
                 <a-input v-model:value="trainStation.index"/>
@@ -221,40 +221,11 @@ export default defineComponent({
             });
         };
 
-        // --------------------- 车次下拉框 -------------------------
-        const trains = ref([]);
-
-        /**
-         * 查询所有的车次, 用于车次下拉框
-         */
-        const queryTrainCode = () => {
-            axios.get("/business/admin/train/query-all").then((response) => {
-                let data = response.data;
-                if (data.success) {
-                    // console.log(data.content)
-                    trains.value = data.content;
-                } else {
-                    notification.error({description: data.message});
-                }
-            });
-        };
-
-        /**
-         * 车次下拉框筛选
-         */
-        const filterTrainCodeOption = (input, option) => {
-            console.log(input, option);
-            // 官方的示例是按value来过滤, 我们是按多个字段来搜, 即能按车次, 也能按起始站终点站, 所以扩展出label属性
-            return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-        };
-
         onMounted(() => {
             handleQuery({
                 page: 1,
                 size: pagination.value.pageSize
             });
-            // 页面加载后执行
-            queryTrainCode();
         });
 
         return {
@@ -270,8 +241,6 @@ export default defineComponent({
             handleOk,
             onEdit,
             onDelete,
-            filterTrainCodeOption,
-            trains,
         };
     },
 });
