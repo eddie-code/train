@@ -1,21 +1,24 @@
 package com.example.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.common.resp.PageResp;
-import com.example.common.util.SnowUtil;
 import com.example.business.domain.Station;
 import com.example.business.mapper.StationMapper;
 import com.example.business.req.StationQueryReq;
 import com.example.business.req.StationSaveReq;
 import com.example.business.resp.StationQueryResp;
 import com.example.business.service.StationService;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.common.exception.BusinessException;
+import com.example.common.exception.BusinessExceptionEnum;
+import com.example.common.resp.PageResp;
+import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -31,6 +34,11 @@ public class StationServiceImpl implements StationService {
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(req, Station.class);
         if (ObjectUtil.isNull(station.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            Station stationDB = selectByUnique(req.getName());
+            if (ObjectUtil.isNotEmpty(stationDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_STATION_NAME_UNIQUE_ERROR);
+            }
             station.setId(SnowUtil.getSnowflakeNextId());
             station.setCreateTime(now);
             station.setUpdateTime(now);
@@ -38,6 +46,17 @@ public class StationServiceImpl implements StationService {
         } else {
             station.setUpdateTime(now);
             stationMapper.updateById(station);
+        }
+    }
+
+    private Station selectByUnique(String name) {
+        QueryWrapper<Station> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(Station::getName, name).orderByDesc(Station::getNamePinyin);
+        List<Station> list = stationMapper.selectList(queryWrapper);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
         }
     }
 
