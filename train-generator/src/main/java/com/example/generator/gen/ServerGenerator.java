@@ -15,7 +15,7 @@ import java.util.*;
 
 public class ServerGenerator {
     // 是否需要增删查改功能, 默认是查
-    static boolean readOnly = false;
+    static boolean readOnly = true;
     static String prefix = "train-";
 
     static String vuePath = "admin/src/views/main/";
@@ -89,13 +89,13 @@ public class ServerGenerator {
          *   后端：按需选择生成的模块
          * ====================
          */
-        gen(Domain, param, "service", "service");
-        gen(Domain, param, "service/impl", "serviceImpl");
-        gen(Domain, param, "controller", "controller");
-        gen(Domain, param, "controller/admin", "adminController");
-        gen(Domain, param, "req", "saveReq");
-        gen(Domain, param, "req", "queryReq");
-        gen(Domain, param, "resp", "queryResp");
+//        gen(Domain, param, "service", "service");
+//        gen(Domain, param, "service/impl", "serviceImpl");
+//        gen(Domain, param, "controller", "controller");
+//        gen(Domain, param, "controller/admin", "adminController");
+//        gen(Domain, param, "req", "saveReq");
+//        gen(Domain, param, "req", "queryReq");
+//        gen(Domain, param, "resp", "queryResp");
         /**
          * ====================
          *   前端生成的模块
