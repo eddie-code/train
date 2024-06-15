@@ -1,6 +1,7 @@
 package com.example.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,6 +13,8 @@ import com.example.business.req.TrainCarriageQueryReq;
 import com.example.business.req.TrainCarriageSaveReq;
 import com.example.business.resp.TrainCarriageQueryResp;
 import com.example.business.service.TrainCarriageService;
+import com.example.common.exception.BusinessException;
+import com.example.common.exception.BusinessExceptionEnum;
 import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +42,11 @@ public class TrainCarriageServiceImpl implements TrainCarriageService {
 
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
         if (ObjectUtil.isNull(trainCarriage.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            TrainCarriage trainCarriageDB = selectByUnique(req.getTrainCode(), req.getIndex());
+            if (ObjectUtil.isNotEmpty(trainCarriageDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR);
+            }
             trainCarriage.setId(SnowUtil.getSnowflakeNextId());
             trainCarriage.setCreateTime(now);
             trainCarriage.setUpdateTime(now);
@@ -46,6 +54,20 @@ public class TrainCarriageServiceImpl implements TrainCarriageService {
         } else {
             trainCarriage.setUpdateTime(now);
             trainCarriageMapper.updateById(trainCarriage);
+        }
+    }
+
+    private TrainCarriage selectByUnique(String trainCode, Integer index) {
+        QueryWrapper<TrainCarriage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(TrainCarriage::getTrainCode, trainCode)
+                .eq(TrainCarriage::getIndex, index)
+                .orderByDesc(TrainCarriage::getCreateTime);
+        List<TrainCarriage> list = trainCarriageMapper.selectList(queryWrapper);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
         }
     }
 

@@ -1,21 +1,24 @@
 package com.example.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.common.resp.PageResp;
-import com.example.common.util.SnowUtil;
 import com.example.business.domain.Train;
 import com.example.business.mapper.TrainMapper;
 import com.example.business.req.TrainQueryReq;
 import com.example.business.req.TrainSaveReq;
 import com.example.business.resp.TrainQueryResp;
 import com.example.business.service.TrainService;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.common.exception.BusinessException;
+import com.example.common.exception.BusinessExceptionEnum;
+import com.example.common.resp.PageResp;
+import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,6 +35,11 @@ public class TrainServiceImpl implements TrainService {
         DateTime now = DateTime.now();
         Train train = BeanUtil.copyProperties(req, Train.class);
         if (ObjectUtil.isNull(train.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            Train trainDB = selectByUnique(req.getCode());
+            if (ObjectUtil.isNotEmpty(trainDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CODE_UNIQUE_ERROR);
+            }
             train.setId(SnowUtil.getSnowflakeNextId());
             train.setCreateTime(now);
             train.setUpdateTime(now);
@@ -39,6 +47,19 @@ public class TrainServiceImpl implements TrainService {
         } else {
             train.setUpdateTime(now);
             trainMapper.updateById(train);
+        }
+    }
+
+    private Train selectByUnique(String code) {
+        QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(Train::getCode, code)
+                .orderByDesc(Train::getCreateTime);
+        List<Train> list = trainMapper.selectList(queryWrapper);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
         }
     }
 
