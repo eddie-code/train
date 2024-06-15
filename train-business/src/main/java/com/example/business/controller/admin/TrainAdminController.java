@@ -3,6 +3,7 @@ package com.example.business.controller.admin;
 import com.example.business.req.TrainQueryReq;
 import com.example.business.req.TrainSaveReq;
 import com.example.business.resp.TrainQueryResp;
+import com.example.business.service.TrainSeatService;
 import com.example.business.service.TrainService;
 import com.example.common.resp.CommonResp;
 import com.example.common.resp.PageResp;
@@ -18,6 +19,9 @@ public class TrainAdminController {
 
     @Autowired
     private TrainService trainService;
+
+    @Autowired
+    private TrainSeatService trainSeatService;
 
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody TrainSaveReq req) {
@@ -41,6 +45,12 @@ public class TrainAdminController {
     public CommonResp<List<TrainQueryResp>> queryAll() {
         List<TrainQueryResp> list = trainService.queryAll();
         return new CommonResp<>(list);
+    }
+
+    @GetMapping("/gen-seat/{trainCode}")
+    public CommonResp<Object> genSeat(@PathVariable String trainCode) {
+        trainSeatService.genTrainSeat(trainCode);
+        return new CommonResp<>();
     }
 
 }

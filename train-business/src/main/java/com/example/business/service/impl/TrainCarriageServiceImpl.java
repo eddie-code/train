@@ -5,17 +5,17 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.common.resp.PageResp;
-import com.example.common.util.SnowUtil;
 import com.example.business.domain.TrainCarriage;
 import com.example.business.mapper.TrainCarriageMapper;
 import com.example.business.req.TrainCarriageQueryReq;
 import com.example.business.req.TrainCarriageSaveReq;
 import com.example.business.resp.TrainCarriageQueryResp;
 import com.example.business.service.TrainCarriageService;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.common.resp.PageResp;
+import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -71,4 +71,14 @@ public class TrainCarriageServiceImpl implements TrainCarriageService {
     public void delete(Long id) {
         trainCarriageMapper.deleteById(id);
     }
+
+    @Override
+    public List<TrainCarriage> selectByTrainCode(String trainCode) {
+        QueryWrapper<TrainCarriage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(TrainCarriage::getTrainCode, trainCode)
+                .orderByAsc(TrainCarriage::getIndex);
+        return trainCarriageMapper.selectList(queryWrapper);
+    }
+
 }

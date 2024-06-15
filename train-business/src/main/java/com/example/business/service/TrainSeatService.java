@@ -13,4 +13,5 @@ public interface TrainSeatService {
 
     void delete(Long id);
 
+    void genTrainSeat(String trainCode);
 }
