@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.business.domain.TrainCarriage;
+import com.example.business.enums.SeatColEnum;
 import com.example.business.mapper.TrainCarriageMapper;
 import com.example.business.req.TrainCarriageQueryReq;
 import com.example.business.req.TrainCarriageSaveReq;
@@ -29,6 +30,13 @@ public class TrainCarriageServiceImpl implements TrainCarriageService {
     @Override
     public void save(TrainCarriageSaveReq req) {
         DateTime now = DateTime.now();
+
+        // 自动计算出列数和总座位数
+        List<SeatColEnum> seatColEnums = SeatColEnum.getColsByType(req.getSeatType());
+        log.info("根据车箱的座位类型，筛选出所有的列: {}", seatColEnums);
+        req.setColCount(seatColEnums.size());
+        req.setSeatCount(req.getColCount() * req.getRowCount());
+
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
         if (ObjectUtil.isNull(trainCarriage.getId())) {
             trainCarriage.setId(SnowUtil.getSnowflakeNextId());
