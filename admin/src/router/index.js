@@ -26,6 +26,10 @@ const routes = [
         }, {
             path: 'train-seat',
             component: () => import('../views/main/Train-seatView.vue'),
+        }, {
+            path: 'batch/job',
+            name: 'batch/job',
+            component: () => import('../views/main/Job.vue')
         }]
     }, {
         // 当直接访问域名，重定向到欢迎页
