@@ -40,6 +40,9 @@ const routes = [
             }, {
                 path: 'daily-train-carriage',
                 component: () => import('../views/main/business/Daily-train-carriageView.vue'),
+            }, {
+                path: 'daily-train-seat',
+                component: () => import('../views/main/business/Daily-train-seatView.vue'),
             }]
         }, {
             path: 'batch/',
