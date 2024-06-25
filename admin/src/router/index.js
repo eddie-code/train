@@ -34,6 +34,9 @@ const routes = [
             children: [{
                 path: 'daily-train',
                 component: () => import('../views/main/business/Daily-trainView.vue'),
+            }, {
+                path: 'daily-train-carriage',
+                component: () => import('../views/main/business/Daily-train-carriageView.vue'),
             }]
         }, {
             path: 'batch/',
