@@ -45,8 +45,16 @@ public class DailyTrainSeatServiceImpl implements DailyTrainSeatService {
     public PageResp<DailyTrainSeatQueryResp> queryList(DailyTrainSeatQueryReq req) {
         log.info("查询条件：{}", req);
         QueryWrapper<DailyTrainSeat> queryWrapper = new QueryWrapper<>();
+
+        if (ObjectUtil.isNotEmpty(req.getTrainCode())) {
+            queryWrapper.lambda().eq(DailyTrainSeat::getTrainCode, req.getTrainCode());
+        }
+
         queryWrapper.lambda()
-            .orderByDesc(DailyTrainSeat::getId);
+            .orderByDesc(DailyTrainSeat::getDate)
+            .orderByAsc(DailyTrainSeat::getTrainCode)
+            .orderByAsc(DailyTrainSeat::getCarriageIndex)
+            .orderByAsc(DailyTrainSeat::getCarriageSeatIndex);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
