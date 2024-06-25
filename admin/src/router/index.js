@@ -30,6 +30,12 @@ const routes = [
                 component: () => import('../views/main/base/Train-seatView.vue'),
             }]
         }, {
+            path: 'business/',
+            children: [{
+                path: 'daily-train',
+                component: () => import('../views/main/business/Daily-trainView.vue'),
+            }]
+        }, {
             path: 'batch/',
             children: [{
                 path: 'job',

@@ -15,7 +15,7 @@ import java.util.*;
 
 public class ServerGenerator {
     // 是否需要增删查改功能, 默认是查
-    static boolean readOnly = true;
+    static boolean readOnly = false;
     static String prefix = "train-";
 
     static String vuePath = "admin/src/views/main/";
@@ -89,13 +89,13 @@ public class ServerGenerator {
          *   后端：按需选择生成的模块
          * ====================
          */
-//        gen(Domain, param, "service", "service");
-//        gen(Domain, param, "service/impl", "serviceImpl");
-//        gen(Domain, param, "controller", "controller");
-//        gen(Domain, param, "controller/admin", "adminController");
-//        gen(Domain, param, "req", "saveReq");
-//        gen(Domain, param, "req", "queryReq");
-//        gen(Domain, param, "resp", "queryResp");
+        gen(Domain, param, "service", "service");
+        gen(Domain, param, "service/impl", "serviceImpl");
+        gen(Domain, param, "controller", "controller");
+        gen(Domain, param, "controller/admin", "adminController");
+        gen(Domain, param, "req", "saveReq");
+        gen(Domain, param, "req", "queryReq");
+        gen(Domain, param, "resp", "queryResp");
         /**
          * ====================
          *   前端生成的模块
@@ -120,7 +120,8 @@ public class ServerGenerator {
 //        String fileName = vuePath + module + "/" + do_main + "View.vue";
         new File(vuePath).mkdirs();
         do_main = Character.toUpperCase(do_main.charAt(0)) + do_main.substring(1); // 首字母大写
-        String fileName = vuePath + do_main + "View.vue";
+//        String fileName = vuePath + do_main + "View.vue";
+        String fileName = vuePath + module + "/" + do_main + "View.vue";
         System.out.println("开始生成：" + fileName);
         FreemarkerUtil.generator(fileName, param);
     }
