@@ -15,7 +15,7 @@ import java.util.*;
 
 public class ServerGenerator {
     // 是否需要增删查改功能, 默认是查
-    static boolean readOnly = false;
+    static boolean readOnly = true;
     static String prefix = "train-";
 
     static String vuePath = "admin/src/views/main/";
