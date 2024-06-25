@@ -45,8 +45,17 @@ public class DailyTrainServiceImpl implements DailyTrainService {
     public PageResp<DailyTrainQueryResp> queryList(DailyTrainQueryReq req) {
         log.info("查询条件：{}", req);
         QueryWrapper<DailyTrain> queryWrapper = new QueryWrapper<>();
+
+        if (ObjectUtil.isNotNull(req.getDate())) {
+            queryWrapper.lambda().eq(DailyTrain::getDate, req.getDate());
+        }
+        if (ObjectUtil.isNotEmpty(req.getCode())) {
+            queryWrapper.lambda().like(DailyTrain::getCode, req.getCode());
+        }
+
         queryWrapper.lambda()
-            .orderByDesc(DailyTrain::getId);
+                .orderByDesc(DailyTrain::getDate)
+                .orderByAsc(DailyTrain::getCode);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
