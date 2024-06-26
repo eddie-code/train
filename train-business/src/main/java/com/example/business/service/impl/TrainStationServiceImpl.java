@@ -114,4 +114,13 @@ public class TrainStationServiceImpl implements TrainStationService {
     public void delete(Long id) {
         trainStationMapper.deleteById(id);
     }
+
+    @Override
+    public List<TrainStation> selectByTrainCode(String trainCode) {
+        QueryWrapper<TrainStation> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(TrainStation::getTrainCode, trainCode)
+                .orderByAsc(TrainStation::getIndex);
+        return trainStationMapper.selectList(queryWrapper);
+    }
 }
