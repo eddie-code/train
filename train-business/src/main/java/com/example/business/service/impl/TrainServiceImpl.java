@@ -97,10 +97,14 @@ public class TrainServiceImpl implements TrainService {
     @Transactional
     @Override
     public List<TrainQueryResp> queryAll() {
-        QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().orderByAsc(Train::getCode);
-        List<Train> trainList = trainMapper.selectList(queryWrapper);
+        List<Train> trainList = selectAll();
         return BeanUtil.copyToList(trainList, TrainQueryResp.class);
     }
 
+    @Override
+    public List<Train> selectAll() {
+        QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().orderByAsc(Train::getCode);
+        return trainMapper.selectList(queryWrapper);
+    }
 }
