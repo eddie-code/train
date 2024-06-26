@@ -1,22 +1,31 @@
 package com.example.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.common.resp.PageResp;
-import com.example.common.util.SnowUtil;
 import com.example.business.domain.DailyTrainSeat;
+import com.example.business.domain.TrainSeat;
+import com.example.business.domain.TrainStation;
 import com.example.business.mapper.DailyTrainSeatMapper;
 import com.example.business.req.DailyTrainSeatQueryReq;
 import com.example.business.req.DailyTrainSeatSaveReq;
 import com.example.business.resp.DailyTrainSeatQueryResp;
 import com.example.business.service.DailyTrainSeatService;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.business.service.TrainSeatService;
+import com.example.business.service.TrainStationService;
+import com.example.common.resp.PageResp;
+import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +34,12 @@ public class DailyTrainSeatServiceImpl implements DailyTrainSeatService {
 
     @Autowired
     private DailyTrainSeatMapper dailyTrainSeatMapper;
+
+    @Autowired
+    private TrainStationService trainStationService;
+
+    @Autowired
+    private TrainSeatService trainSeatService;
 
     @Override
     public void save(DailyTrainSeatSaveReq req) {
@@ -78,5 +93,40 @@ public class DailyTrainSeatServiceImpl implements DailyTrainSeatService {
     @Override
     public void delete(Long id) {
         dailyTrainSeatMapper.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public void genDaily(Date date, String trainCode) {
+        log.info("生成日期【{}】车次【{}】的座位信息开始", DateUtil.formatDate(date), trainCode);
+
+        // 删除某日某车次的座位信息
+        QueryWrapper<DailyTrainSeat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(DailyTrainSeat::getDate, date)
+                .eq(DailyTrainSeat::getTrainCode, trainCode);
+        dailyTrainSeatMapper.delete(queryWrapper);
+
+        List<TrainStation> stationList = trainStationService.selectByTrainCode(trainCode);
+        String sell = StrUtil.fillBefore("", '0', stationList.size() - 1);
+
+        // 查出某车次的所有的座位信息
+        List<TrainSeat> seatList = trainSeatService.selectByTrainCode(trainCode);
+        if (CollUtil.isEmpty(seatList)) {
+            log.info("该车次没有座位基础数据，生成该车次的座位信息结束");
+            return;
+        }
+
+        for (TrainSeat trainSeat : seatList) {
+            DateTime now = DateTime.now();
+            DailyTrainSeat dailyTrainSeat = BeanUtil.copyProperties(trainSeat, DailyTrainSeat.class);
+            dailyTrainSeat.setId(SnowUtil.getSnowflakeNextId());
+            dailyTrainSeat.setCreateTime(now);
+            dailyTrainSeat.setUpdateTime(now);
+            dailyTrainSeat.setDate(date);
+            dailyTrainSeat.setSell(sell);
+            dailyTrainSeatMapper.insert(dailyTrainSeat);
+        }
+        log.info("生成日期【{}】车次【{}】的座位信息结束", DateUtil.formatDate(date), trainCode);
     }
 }

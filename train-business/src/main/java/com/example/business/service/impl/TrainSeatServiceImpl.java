@@ -140,4 +140,12 @@ public class TrainSeatServiceImpl implements TrainSeatService {
         }
     }
 
+    @Override
+    public List<TrainSeat> selectByTrainCode(String trainCode) {
+        QueryWrapper<TrainSeat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(TrainSeat::getTrainCode, trainCode)
+                .orderByAsc(TrainSeat::getId);
+        return trainSeatMapper.selectList(queryWrapper);
+    }
 }
