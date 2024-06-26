@@ -1,6 +1,9 @@
 package com.example.batch.feign;
 
+import com.example.common.resp.CommonResp;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class BusinessFeignFallback implements BusinessFeign {
@@ -9,8 +12,8 @@ public class BusinessFeignFallback implements BusinessFeign {
         return "Fallback";
     }
 
-//    @Override
-//    public CommonResp<Object> genDaily(Date date) {
-//        return null;
-//    }
+    @Override
+    public CommonResp<Object> genDaily(Date date) {
+        return null;
+    }
 }

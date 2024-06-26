@@ -1,15 +1,17 @@
 package com.example.business.controller.admin;
 
-import com.example.common.context.LoginMemberContext;
-import com.example.common.resp.CommonResp;
-import com.example.common.resp.PageResp;
 import com.example.business.req.DailyTrainQueryReq;
 import com.example.business.req.DailyTrainSaveReq;
 import com.example.business.resp.DailyTrainQueryResp;
 import com.example.business.service.DailyTrainService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.common.resp.CommonResp;
+import com.example.common.resp.PageResp;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/admin/daily-train")
@@ -33,6 +35,12 @@ public class DailyTrainAdminController {
     @DeleteMapping("/delete/{id}")
     public CommonResp<Object> delete(@PathVariable Long id) {
         dailyTrainService.delete(id);
+        return new CommonResp<>();
+    }
+
+    @GetMapping("/gen-daily/{date}")
+    public CommonResp<Object> genDaily(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        dailyTrainService.genDaily(date);
         return new CommonResp<>();
     }
 
