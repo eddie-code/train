@@ -124,6 +124,7 @@ export default defineComponent({
         date: null
     });
     const genDailyVisible = ref(false);
+    const genDailyLoading = ref(false);
     const columns = [
     {
       title: '日期',
@@ -269,9 +270,9 @@ export default defineComponent({
 
       const handleGenDailyOk = () => {
           let date = dayjs(genDaily.value.date).format("YYYY-MM-DD");
-          // genDailyLoading.value = true;
+          genDailyLoading.value = true;
           axios.get("/business/admin/daily-train/gen-daily/" + date).then((response) => {
-              // genDailyLoading.value = false;
+              genDailyLoading.value = false;
               let data = response.data;
               if (data.success) {
                   notification.success({description: "生成成功！"});
@@ -313,7 +314,7 @@ export default defineComponent({
       genDailyVisible,
       handleGenDailyOk,
       onClickGenDaily,
-      // genDailyLoading
+      genDailyLoading
     };
   },
 });
