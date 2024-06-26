@@ -5,6 +5,8 @@ import com.example.business.req.DailyTrainStationQueryReq;
 import com.example.business.req.DailyTrainStationSaveReq;
 import com.example.business.resp.DailyTrainStationQueryResp;
 
+import java.util.Date;
+
 public interface DailyTrainStationService {
 
     void save(DailyTrainStationSaveReq req);
@@ -13,4 +15,5 @@ public interface DailyTrainStationService {
 
     void delete(Long id);
 
+    void genDaily(Date date, String code);
 }

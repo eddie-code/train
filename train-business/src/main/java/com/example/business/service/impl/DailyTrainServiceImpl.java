@@ -115,6 +115,7 @@ public class DailyTrainServiceImpl implements DailyTrainService {
     @Transactional
     public void genDailyTrain(Date date, Train train) {
         log.info("生成日期【{}】车次【{}】的信息开始", DateUtil.formatDate(date), train.getCode());
+
         // 删除该车次已有的数据
         QueryWrapper<DailyTrain> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
@@ -132,7 +133,7 @@ public class DailyTrainServiceImpl implements DailyTrainService {
         dailyTrainMapper.insert(dailyTrain);
 
         // 生成该车次的车站数据
-//        dailyTrainStationService.genDaily(date, train.getCode());
+        dailyTrainStationService.genDaily(date, train.getCode());
 
         // 生成该车次的车厢数据
 //        dailyTrainCarriageService.genDaily(date, train.getCode());
@@ -146,6 +147,6 @@ public class DailyTrainServiceImpl implements DailyTrainService {
         // 生成令牌余量数据
 //        skTokenService.genDaily(date, train.getCode());
 
-//        log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
+        log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
     }
 }
