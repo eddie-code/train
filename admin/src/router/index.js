@@ -43,6 +43,9 @@ const routes = [
             }, {
                 path: 'daily-train-seat',
                 component: () => import('../views/main/business/Daily-train-seatView.vue'),
+            }, {
+                path: 'daily-train-ticket',
+                component: () => import('../views/main/business/Daily-train-ticketView.vue'),
             }]
         }, {
             path: 'batch/',
