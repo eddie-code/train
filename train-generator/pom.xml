@@ -8,10 +8,10 @@
     </parent>
 
     <artifactId>train-generator</artifactId>
-    <packaging>jar</packaging>
+<!--    <packaging>jar</packaging>-->
 
     <name>train-generator</name>
-    <url>http://maven.apache.org</url>
+<!--    <url>http://maven.apache.org</url>-->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
