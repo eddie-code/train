@@ -66,10 +66,10 @@ public class DailyTrainSeatServiceImpl implements DailyTrainSeatService {
         }
 
         queryWrapper.lambda()
-            .orderByDesc(DailyTrainSeat::getDate)
-            .orderByAsc(DailyTrainSeat::getTrainCode)
-            .orderByAsc(DailyTrainSeat::getCarriageIndex)
-            .orderByAsc(DailyTrainSeat::getCarriageSeatIndex);
+                .orderByDesc(DailyTrainSeat::getDate)
+                .orderByAsc(DailyTrainSeat::getTrainCode)
+                .orderByAsc(DailyTrainSeat::getCarriageIndex)
+                .orderByAsc(DailyTrainSeat::getCarriageSeatIndex);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
@@ -128,5 +128,21 @@ public class DailyTrainSeatServiceImpl implements DailyTrainSeatService {
             dailyTrainSeatMapper.insert(dailyTrainSeat);
         }
         log.info("生成日期【{}】车次【{}】的座位信息结束", DateUtil.formatDate(date), trainCode);
+    }
+
+    @Override
+    public int countSeat(Date date, String trainCode, String seatType) {
+        QueryWrapper<DailyTrainSeat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(DailyTrainSeat::getDate, date)
+                .eq(DailyTrainSeat::getTrainCode, trainCode);
+        if (StrUtil.isNotBlank(seatType)) {
+            queryWrapper.lambda().eq(DailyTrainSeat::getSeatType, seatType);
+        }
+        long l = dailyTrainSeatMapper.selectCount(queryWrapper);
+        if (l == 0L) {
+            return -1;
+        }
+        return (int) l;
     }
 }
