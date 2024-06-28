@@ -25,7 +25,10 @@ const routes = [
         }, {
             path: 'ticket',
             component: () => import('../views/main/Daily-train-ticketView.vue'),
-        }, ]
+        }, {
+            path: 'order',
+            component: () => import('../views/main/OrderView.vue'),
+        },]
     }, {
         // 当直接访问域名，重定向到欢迎页
         path: '',
