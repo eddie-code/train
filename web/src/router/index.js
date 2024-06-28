@@ -22,7 +22,10 @@ const routes = [
         }, {
             path: 'passenger',
             component: () => import('../views/main/PassengerView.vue'),
-        }]
+        }, {
+            path: 'ticket',
+            component: () => import('../views/main/Daily-train-ticketView.vue'),
+        }, ]
     }, {
         // 当直接访问域名，重定向到欢迎页
         path: '',
