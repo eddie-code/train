@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -64,6 +65,18 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
         log.info("查询条件：{}", req);
         QueryWrapper<DailyTrainTicket> queryWrapper = new QueryWrapper<>();
+        if (ObjUtil.isNotNull(req.getDate())) {
+            queryWrapper.lambda().eq(DailyTrainTicket::getDate, req.getDate());
+        }
+        if (ObjUtil.isNotEmpty(req.getTrainCode())) {
+            queryWrapper.lambda().eq(DailyTrainTicket::getTrainCode, req.getTrainCode());
+        }
+        if (ObjUtil.isNotEmpty(req.getStart())) {
+            queryWrapper.lambda().eq(DailyTrainTicket::getStart, req.getStart());
+        }
+        if (ObjUtil.isNotEmpty(req.getEnd())) {
+            queryWrapper.lambda().eq(DailyTrainTicket::getEnd, req.getEnd());
+        }
         queryWrapper.lambda()
             .orderByDesc(DailyTrainTicket::getId);
 
