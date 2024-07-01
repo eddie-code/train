@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.common.context.LoginMemberContext;
 import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
 import com.example.member.domain.Passenger;
@@ -71,4 +72,18 @@ public class PassengerServiceImpl implements PassengerService {
     public void delete(Long id) {
         passengerMapper.deleteById(id);
     }
+
+    /**
+     * 查询我的所有乘客
+     */
+    @Override
+    public List<PassengerQueryResp> queryMine() {
+        QueryWrapper<Passenger> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(Passenger::getMemberId, LoginMemberContext.getId())
+                .orderByAsc(Passenger::getName);
+        List<Passenger> list = passengerMapper.selectList(queryWrapper);
+        return BeanUtil.copyToList(list, PassengerQueryResp.class);
+    }
+
 }
