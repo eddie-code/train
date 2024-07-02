@@ -261,21 +261,22 @@ export default defineComponent({
                     chooseSeatType.value = 0;
                 }
 
-                // // 余票小于20张时，不允许选座，否则选座成功率不高，影响出票
-                // if (chooseSeatType.value !== 0) {
-                //     for (let i = 0; i < seatTypes.length; i++) {
-                //         let seatType = seatTypes[i];
-                //         // 找到同类型座位
-                //         if (ticketSeatTypeCodesSet[0] === seatType.code) {
-                //             // 判断余票，小于20张就不支持选座
-                //             if (seatType.count < 20) {
-                //                 console.log("余票小于20张就不支持选座")
-                //                 chooseSeatType.value = 0;
-                //                 break;
-                //             }
-                //         }
-                //     }
-                // }
+                // 余票小于20张时，不允许选座，否则选座成功率不高，影响出票
+                if (chooseSeatType.value !== 0) {
+                    for (let i = 0; i < seatTypes.length; i++) {
+                        let seatType = seatTypes[i];
+                        // 找到同类型座位
+                        if (ticketSeatTypeCodesSet[0] === seatType.code) {
+                            // 判断余票，小于20张就不支持选座
+                            if (seatType.count < 20) {
+                                console.log("余票小于20张就不支持选座")
+                                chooseSeatType.value = 0;
+                                break;
+                            }
+                        }
+                    }
+                }
+
             }
 
             // 弹出确认界面
@@ -308,6 +309,14 @@ export default defineComponent({
 .order-train .order-train-main {
     font-size: 18px;
     font-weight: bold;
+}
+
+.order-train .order-train-ticket {
+    margin-top: 15px;
+}
+.order-train .order-train-ticket .order-train-ticket-main {
+    color: red;
+    font-size: 18px;
 }
 
 .order-tickets {
