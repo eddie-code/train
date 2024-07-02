@@ -32,6 +32,7 @@ public class PassengerServiceImpl implements PassengerService {
         DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(req, Passenger.class);
         if (ObjectUtil.isNull(passenger.getId())) {
+            passenger.setMemberId(LoginMemberContext.getId());
             passenger.setId(SnowUtil.getSnowflakeNextId());
             passenger.setCreateTime(now);
             passenger.setUpdateTime(now);

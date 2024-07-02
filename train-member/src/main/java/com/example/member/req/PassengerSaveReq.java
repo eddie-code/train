@@ -2,7 +2,6 @@ package com.example.member.req;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.ToString;
 
@@ -20,7 +19,7 @@ public class PassengerSaveReq {
     /**
     * 会员id
     */
-    @NotNull(message = "【会员id】不能为空")
+//    @NotNull(message = "【会员id】不能为空")
     private Long memberId;
 
     /**
