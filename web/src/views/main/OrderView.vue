@@ -99,6 +99,7 @@
             </div>
             <br/>
             最终购票: {{tickets}}
+            最终选座: {{chooseSeatObj}}
         </div>
     </a-modal>
 </template>
@@ -184,6 +185,7 @@ export default defineComponent({
         // }
         const chooseSeatObj = ref({});
         watch(() => SEAT_COL_ARRAY.value, () => {
+            // 再次强调: 先清空, 再次赋值
             chooseSeatObj.value = {};
             for (let i = 1; i <= 2; i++) {
                 SEAT_COL_ARRAY.value.forEach((item) => {
