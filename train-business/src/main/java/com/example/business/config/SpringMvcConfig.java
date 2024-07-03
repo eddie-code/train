@@ -1,6 +1,7 @@
 package com.example.business.config;
 
 import com.example.common.interceptor.LogInterceptor;
+import com.example.common.interceptor.MemberInterceptor;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -16,11 +17,20 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     @Resource
     LogInterceptor logInterceptor;
 
+    @Resource
+    MemberInterceptor memberInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(logInterceptor)
                 .addPathPatterns("/**");
 
+        // 路径不要包含context-path
+        registry.addInterceptor(memberInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/business/hello"
+                );
     }
 }
 

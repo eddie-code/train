@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.business.domain.ConfirmOrder;
+import com.example.business.domain.DailyTrainTicket;
 import com.example.business.enums.ConfirmOrderStatusEnum;
 import com.example.business.mapper.ConfirmOrderMapper;
 import com.example.business.req.ConfirmOrderDoReq;
@@ -14,6 +15,8 @@ import com.example.business.req.ConfirmOrderQueryReq;
 import com.example.business.req.ConfirmOrderTicketReq;
 import com.example.business.resp.ConfirmOrderQueryResp;
 import com.example.business.service.ConfirmOrderService;
+import com.example.business.service.DailyTrainTicketService;
+import com.example.common.context.LoginMemberContext;
 import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,9 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
     @Autowired
     private ConfirmOrderMapper confirmOrderMapper;
+
+    @Autowired
+    private DailyTrainTicketService dailyTrainTicketService;
 
     @Override
     public void save(ConfirmOrderDoReq req) {
@@ -93,7 +99,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
          confirmOrder.setId(SnowUtil.getSnowflakeNextId());
          confirmOrder.setCreateTime(now);
          confirmOrder.setUpdateTime(now);
-         confirmOrder.setMemberId(req.getMemberId());
+         confirmOrder.setMemberId(LoginMemberContext.getId());
          confirmOrder.setDate(date);
          confirmOrder.setTrainCode(trainCode);
          confirmOrder.setStart(start);
@@ -104,6 +110,8 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
          confirmOrderMapper.insert(confirmOrder);
 
         // 查出余票记录，需要得到真实的库存
+        DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(date, trainCode, start, end);
+        log.info("查出余票记录：{}", dailyTrainTicket);
 
         // 预扣减余票数量，并判断余票是否足够
 
