@@ -2,6 +2,7 @@ package com.example.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.business.domain.ConfirmOrder;
 import com.example.business.domain.DailyTrainTicket;
 import com.example.business.enums.ConfirmOrderStatusEnum;
+import com.example.business.enums.SeatTypeEnum;
 import com.example.business.mapper.ConfirmOrderMapper;
 import com.example.business.req.ConfirmOrderDoReq;
 import com.example.business.req.ConfirmOrderQueryReq;
@@ -17,6 +19,8 @@ import com.example.business.resp.ConfirmOrderQueryResp;
 import com.example.business.service.ConfirmOrderService;
 import com.example.business.service.DailyTrainTicketService;
 import com.example.common.context.LoginMemberContext;
+import com.example.common.exception.BusinessException;
+import com.example.common.exception.BusinessExceptionEnum;
 import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +60,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         log.info("查询条件：{}", req);
         QueryWrapper<ConfirmOrder> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-            .orderByDesc(ConfirmOrder::getId);
+                .orderByDesc(ConfirmOrder::getId);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
@@ -94,26 +98,27 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         List<ConfirmOrderTicketReq> tickets = req.getTickets();
 
         // 保存确认订单表，状态初始
-         DateTime now = DateTime.now();
-         ConfirmOrder confirmOrder = new ConfirmOrder();
-         confirmOrder.setId(SnowUtil.getSnowflakeNextId());
-         confirmOrder.setCreateTime(now);
-         confirmOrder.setUpdateTime(now);
-         confirmOrder.setMemberId(LoginMemberContext.getId());
-         confirmOrder.setDate(date);
-         confirmOrder.setTrainCode(trainCode);
-         confirmOrder.setStart(start);
-         confirmOrder.setEnd(end);
-         confirmOrder.setDailyTrainTicketId(req.getDailyTrainTicketId());
-         confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
-         confirmOrder.setTickets(JSON.toJSONString(tickets));
-         confirmOrderMapper.insert(confirmOrder);
+        DateTime now = DateTime.now();
+        ConfirmOrder confirmOrder = new ConfirmOrder();
+        confirmOrder.setId(SnowUtil.getSnowflakeNextId());
+        confirmOrder.setCreateTime(now);
+        confirmOrder.setUpdateTime(now);
+        confirmOrder.setMemberId(LoginMemberContext.getId());
+        confirmOrder.setDate(date);
+        confirmOrder.setTrainCode(trainCode);
+        confirmOrder.setStart(start);
+        confirmOrder.setEnd(end);
+        confirmOrder.setDailyTrainTicketId(req.getDailyTrainTicketId());
+        confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
+        confirmOrder.setTickets(JSON.toJSONString(tickets));
+        confirmOrderMapper.insert(confirmOrder);
 
         // 查出余票记录，需要得到真实的库存
         DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(date, trainCode, start, end);
         log.info("查出余票记录：{}", dailyTrainTicket);
 
         // 预扣减余票数量，并判断余票是否足够
+        reduceTickets(req, dailyTrainTicket);
 
         // 选座
 
@@ -122,5 +127,47 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         // 余票详情表修改余票；
         // 为会员增加购票记录
         // 更新确认订单为成功
+    }
+
+    private static void reduceTickets(ConfirmOrderDoReq req, DailyTrainTicket dailyTrainTicket) {
+        // 获取每张票
+        for (ConfirmOrderTicketReq ticketReq : req.getTickets()) {
+            // 获取n等座的枚举值
+            String seatTypeCode = ticketReq.getSeatTypeCode();
+            SeatTypeEnum seatTypeEnum = EnumUtil.getBy(SeatTypeEnum::getCode, seatTypeCode);
+            // jdk17 可以使用switch表达式支持枚举
+            switch (seatTypeEnum) {
+                // 根据枚举值，减少余票数量
+                case YDZ -> {
+                    int countLeft = dailyTrainTicket.getYdz() - 1;
+                    if (countLeft < 0) {
+                        // 余票不足
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setYdz(countLeft);
+                }
+                case EDZ -> {
+                    int countLeft = dailyTrainTicket.getEdz() - 1;
+                    if (countLeft < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setEdz(countLeft);
+                }
+                case RW -> {
+                    int countLeft = dailyTrainTicket.getRw() - 1;
+                    if (countLeft < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setRw(countLeft);
+                }
+                case YW -> {
+                    int countLeft = dailyTrainTicket.getYw() - 1;
+                    if (countLeft < 0) {
+                        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR);
+                    }
+                    dailyTrainTicket.setYw(countLeft);
+                }
+            }
+        }
     }
 }
