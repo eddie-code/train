@@ -10,7 +10,7 @@ import com.example.common.util.SnowUtil;
 import com.example.business.domain.ConfirmOrder;
 import com.example.business.mapper.ConfirmOrderMapper;
 import com.example.business.req.ConfirmOrderQueryReq;
-import com.example.business.req.ConfirmOrderSaveReq;
+import com.example.business.req.ConfirmOrderDoReq;
 import com.example.business.resp.ConfirmOrderQueryResp;
 import com.example.business.service.ConfirmOrderService;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     private ConfirmOrderMapper confirmOrderMapper;
 
     @Override
-    public void save(ConfirmOrderSaveReq req) {
+    public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);
         if (ObjectUtil.isNull(confirmOrder.getId())) {
@@ -70,5 +70,25 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     @Override
     public void delete(Long id) {
         confirmOrderMapper.deleteById(id);
+    }
+
+    @Override
+    public void doConfirm(ConfirmOrderDoReq req) {
+
+        // 省略业务数据校验，如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已买过
+
+        // 保存确认订单表，状态初始
+
+        // 查出余票记录，需要得到真实的库存
+
+        // 预扣减余票数量，并判断余票是否足够
+
+        // 选座
+
+        // 选中座位后事务处理：
+        // 座位表修改售卖情况sell；
+        // 余票详情表修改余票；
+        // 为会员增加购票记录
+        // 更新确认订单为成功
     }
 }
