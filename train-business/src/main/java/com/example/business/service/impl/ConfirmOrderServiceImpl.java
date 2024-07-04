@@ -274,8 +274,8 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
             log.info("车厢{}的座位数：{}", dailyTrainCarriage.getIndex(), seatList.size());
             for (int i = 0; i < seatList.size(); i++) {
                 DailyTrainSeat dailyTrainSeat = seatList.get(i);
-//                Integer seatIndex = dailyTrainSeat.getCarriageSeatIndex();
-//                String col = dailyTrainSeat.getCol();
+                Integer seatIndex = dailyTrainSeat.getCarriageSeatIndex();
+                String col = dailyTrainSeat.getCol();
 //
 //                // 判断当前座位不能被选中过
 //                boolean alreadyChooseFlag = false;
@@ -290,16 +290,16 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 //                    continue;
 //                }
 //
-//                // 判断column，有值的话要比对列号
-//                if (StrUtil.isBlank(column)) {
-//                    log.info("无选座");
-//                } else {
-//                    if (!column.equals(col)) {
-//                        log.info("座位{}列值不对，继续判断下一个座位，当前列值：{}，目标列值：{}", seatIndex, col, column);
-//                        continue;
-//                    }
-//                }
-//
+                // 判断column，有值的话要比对列号
+                if (StrUtil.isBlank(column)) {
+                    log.info("无选座");
+                } else {
+                    if (!column.equals(col)) {
+                        log.info("座位{}列值不对，继续判断下一个座位，当前列值：{}，目标列值：{}", seatIndex, col, column);
+                        continue;
+                    }
+                }
+
                 boolean isChoose = calSell(dailyTrainSeat, startIndex, endIndex);
                 if (isChoose) {
                     log.info("选中座位");
@@ -308,45 +308,45 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
                 } else {
 
                 }
-//
-//                // 根据offset选剩下的座位
-//                boolean isGetAllOffsetSeat = true;
-//                if (CollUtil.isNotEmpty(offsetList)) {
-//                    log.info("有偏移值：{}，校验偏移的座位是否可选", offsetList);
-//                    // 从索引1开始，索引0就是当前已选中的票
-//                    for (int j = 1; j < offsetList.size(); j++) {
-//                        Integer offset = offsetList.get(j);
-//                        // 座位在库的索引是从1开始
-//                        // int nextIndex = seatIndex + offset - 1;
-//                        int nextIndex = i + offset;
-//
-//                        // 有选座时，一定是在同一个车箱
-//                        if (nextIndex >= seatList.size()) {
-//                            log.info("座位{}不可选，偏移后的索引超出了这个车箱的座位数", nextIndex);
-//                            isGetAllOffsetSeat = false;
-//                            break;
-//                        }
-//
-//                        DailyTrainSeat nextDailyTrainSeat = seatList.get(nextIndex);
-//                        boolean isChooseNext = calSell(nextDailyTrainSeat, startIndex, endIndex);
-//                        if (isChooseNext) {
-//                            log.info("座位{}被选中", nextDailyTrainSeat.getCarriageSeatIndex());
+
+                // 根据offset选剩下的座位
+                boolean isGetAllOffsetSeat = true; // 用于判断是否跳出外部的循环
+                if (CollUtil.isNotEmpty(offsetList)) {
+                    log.info("有偏移值：{}，校验偏移的座位是否可选", offsetList);
+                    // 从索引1开始，索引0就是当前已选中的票
+                    for (int j = 1; j < offsetList.size(); j++) {
+                        Integer offset = offsetList.get(j);
+                        // 座位在库的索引是从1开始
+//                        int nextIndex = seatIndex + offset - 1;
+                        int nextIndex = i + offset;
+
+                        // 有选座时，一定是在同一个车箱
+                        if (nextIndex >= seatList.size()) {
+                            log.info("座位{}不可选，偏移后的索引超出了这个车箱的座位数", nextIndex);
+                            isGetAllOffsetSeat = false;
+                            break;
+                        }
+
+                        DailyTrainSeat nextDailyTrainSeat = seatList.get(nextIndex);
+                        boolean isChooseNext = calSell(nextDailyTrainSeat, startIndex, endIndex);
+                        if (isChooseNext) {
+                            log.info("座位{}被选中", nextDailyTrainSeat.getCarriageSeatIndex());
 //                            getSeatList.add(nextDailyTrainSeat);
-//                        } else {
-//                            log.info("座位{}不可选", nextDailyTrainSeat.getCarriageSeatIndex());
-//                            isGetAllOffsetSeat = false;
-//                            break;
-//                        }
-//                    }
-//                }
-//                if (!isGetAllOffsetSeat) {
-//                    getSeatList = new ArrayList<>();
-//                    continue;
-//                }
-//
-//                // 保存选好的座位
+                        } else {
+                            log.info("座位{}不可选", nextDailyTrainSeat.getCarriageSeatIndex());
+                            isGetAllOffsetSeat = false;
+                            break;
+                        }
+                    }
+                }
+                if (!isGetAllOffsetSeat) {
+                    getSeatList = new ArrayList<>();
+                    continue;
+                }
+
+                // 保存选好的座位
 //                finalSeatList.addAll(getSeatList);
-//                return;
+                return;
             }
         }
     }
