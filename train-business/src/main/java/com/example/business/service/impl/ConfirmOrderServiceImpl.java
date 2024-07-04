@@ -272,8 +272,8 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
             // 按车厢选择
             List<DailyTrainSeat> seatList = dailyTrainSeatService.selectByCarriage(date, trainCode, dailyTrainCarriage.getIndex());
             log.info("车厢{}的座位数：{}", dailyTrainCarriage.getIndex(), seatList.size());
-//            for (int i = 0; i < seatList.size(); i++) {
-//                DailyTrainSeat dailyTrainSeat = seatList.get(i);
+            for (int i = 0; i < seatList.size(); i++) {
+                DailyTrainSeat dailyTrainSeat = seatList.get(i);
 //                Integer seatIndex = dailyTrainSeat.getCarriageSeatIndex();
 //                String col = dailyTrainSeat.getCol();
 //
@@ -300,13 +300,14 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 //                    }
 //                }
 //
-//                boolean isChoose = calSell(dailyTrainSeat, startIndex, endIndex);
-//                if (isChoose) {
-//                    log.info("选中座位");
+                boolean isChoose = calSell(dailyTrainSeat, startIndex, endIndex);
+                if (isChoose) {
+                    log.info("选中座位");
+                    return;
 //                    getSeatList.add(dailyTrainSeat);
-//                } else {
-//                    continue;
-//                }
+                } else {
+
+                }
 //
 //                // 根据offset选剩下的座位
 //                boolean isGetAllOffsetSeat = true;
@@ -346,7 +347,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 //                // 保存选好的座位
 //                finalSeatList.addAll(getSeatList);
 //                return;
-//            }
+            }
         }
     }
 
