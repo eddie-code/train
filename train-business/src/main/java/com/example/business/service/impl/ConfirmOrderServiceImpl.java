@@ -22,10 +22,7 @@ import com.example.business.req.ConfirmOrderDoReq;
 import com.example.business.req.ConfirmOrderQueryReq;
 import com.example.business.req.ConfirmOrderTicketReq;
 import com.example.business.resp.ConfirmOrderQueryResp;
-import com.example.business.service.ConfirmOrderService;
-import com.example.business.service.DailyTrainCarriageService;
-import com.example.business.service.DailyTrainSeatService;
-import com.example.business.service.DailyTrainTicketService;
+import com.example.business.service.*;
 import com.example.common.context.LoginMemberContext;
 import com.example.common.exception.BusinessException;
 import com.example.common.exception.BusinessExceptionEnum;
@@ -54,6 +51,9 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
     @Autowired
     private DailyTrainSeatService dailyTrainSeatService;
+
+    @Autowired
+    private AfterConfirmOrderService afterConfirmOrderService;
 
     @Override
     public void save(ConfirmOrderDoReq req) {
@@ -201,13 +201,13 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
         log.info("最终选座：{}", finalSeatList);
 
-        // 选座
-
         // 选中座位后事务处理：
-        // 座位表修改售卖情况sell；
-        // 余票详情表修改余票；
-        // 为会员增加购票记录
-        // 更新确认订单为成功
+            // 选中座位后事务处理：
+            // 座位表修改售卖情况sell；
+            // 余票详情表修改余票；
+            // 为会员增加购票记录
+            // 更新确认订单为成功
+        afterConfirmOrderService.afterDoConfirm(finalSeatList);
     }
 
     private static void reduceTickets(ConfirmOrderDoReq req, DailyTrainTicket dailyTrainTicket) {
