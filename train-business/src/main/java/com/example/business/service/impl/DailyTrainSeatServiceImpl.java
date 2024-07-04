@@ -145,4 +145,19 @@ public class DailyTrainSeatServiceImpl implements DailyTrainSeatService {
         }
         return (int) l;
     }
+
+    @Override
+    public List<DailyTrainSeat> selectByCarriage(Date date, String trainCode, Integer index) {
+        QueryWrapper<DailyTrainSeat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(DailyTrainSeat::getDate, date)
+                .eq(DailyTrainSeat::getTrainCode, trainCode)
+                .eq(DailyTrainSeat::getCarriageIndex, index)
+                .orderByAsc(DailyTrainSeat::getCarriageSeatIndex);
+        List<DailyTrainSeat> list = dailyTrainSeatMapper.selectList(queryWrapper);
+        if (CollUtil.isNotEmpty(list)) {
+            return list;
+        }
+        return null;
+    }
 }

@@ -128,4 +128,15 @@ public class DailyTrainCarriageServiceImpl implements DailyTrainCarriageService 
         }
         log.info("生成日期【{}】车次【{}】的车厢信息结束", DateUtil.formatDate(date), trainCode);
     }
+
+    @Override
+    public List<DailyTrainCarriage> selectBySeatType(Date date, String trainCode, String seatType) {
+        QueryWrapper<DailyTrainCarriage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(DailyTrainCarriage::getDate, date)
+                .eq(DailyTrainCarriage::getTrainCode, trainCode)
+                .eq(DailyTrainCarriage::getSeatType, seatType)
+                .orderByDesc(DailyTrainCarriage::getId);
+        return dailyTrainCarriageMapper.selectList(queryWrapper);
+    }
 }
