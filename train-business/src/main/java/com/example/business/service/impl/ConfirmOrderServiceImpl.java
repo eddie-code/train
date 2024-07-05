@@ -207,7 +207,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
             // 余票详情表修改余票；
             // 为会员增加购票记录
             // 更新确认订单为成功
-        afterConfirmOrderService.afterDoConfirm(finalSeatList);
+        afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeatList);
     }
 
     private static void reduceTickets(ConfirmOrderDoReq req, DailyTrainTicket dailyTrainTicket) {
@@ -262,8 +262,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
      * @param offsetList
      */
     private void getSeat(List<DailyTrainSeat> finalSeatList, Date date, String trainCode, String seatType, String column, List<Integer> offsetList, Integer startIndex, Integer endIndex) {
-        List<DailyTrainSeat> getSeatList;
-        // 按座类型选择
+        List<DailyTrainSeat> getSeatList = new ArrayList<>();
         List<DailyTrainCarriage> carriageList = dailyTrainCarriageService.selectBySeatType(date, trainCode, seatType);
         log.info("共查出{}个符合条件的车厢", carriageList.size());
 
@@ -271,7 +270,6 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         for (DailyTrainCarriage dailyTrainCarriage : carriageList) {
             log.info("开始从车厢{}选座", dailyTrainCarriage.getIndex());
             getSeatList = new ArrayList<>();
-            // 按车厢选择
             List<DailyTrainSeat> seatList = dailyTrainSeatService.selectByCarriage(date, trainCode, dailyTrainCarriage.getIndex());
             log.info("车厢{}的座位数：{}", dailyTrainCarriage.getIndex(), seatList.size());
             for (int i = 0; i < seatList.size(); i++) {
@@ -281,7 +279,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
                 // 判断当前座位不能被选中过
                 boolean alreadyChooseFlag = false;
-                for (DailyTrainSeat finalSeat : finalSeatList) {
+                for (DailyTrainSeat finalSeat : finalSeatList){
                     if (finalSeat.getId().equals(dailyTrainSeat.getId())) {
                         alreadyChooseFlag = true;
                         break;
@@ -311,14 +309,14 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
                 }
 
                 // 根据offset选剩下的座位
-                boolean isGetAllOffsetSeat = true; // 用于判断是否跳出外部的循环
+                boolean isGetAllOffsetSeat = true;
                 if (CollUtil.isNotEmpty(offsetList)) {
                     log.info("有偏移值：{}，校验偏移的座位是否可选", offsetList);
                     // 从索引1开始，索引0就是当前已选中的票
                     for (int j = 1; j < offsetList.size(); j++) {
                         Integer offset = offsetList.get(j);
                         // 座位在库的索引是从1开始
-//                        int nextIndex = seatIndex + offset - 1;
+                        // int nextIndex = seatIndex + offset - 1;
                         int nextIndex = i + offset;
 
                         // 有选座时，一定是在同一个车箱
@@ -341,7 +339,6 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
                     }
                 }
                 if (!isGetAllOffsetSeat) {
-                    // 如果没有选到所有的偏移值，则清空已选座位，继续判断下一个座位
                     getSeatList = new ArrayList<>();
                     continue;
                 }

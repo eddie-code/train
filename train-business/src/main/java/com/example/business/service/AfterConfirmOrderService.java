@@ -1,6 +1,7 @@
 package com.example.business.service;
 
 import com.example.business.domain.DailyTrainSeat;
+import com.example.business.domain.DailyTrainTicket;
 
 import java.util.List;
 
@@ -10,6 +11,6 @@ import java.util.List;
  */
 public interface AfterConfirmOrderService {
 
-    void afterDoConfirm(List<DailyTrainSeat> fianlSeatList);
+    void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> fianlSeatList);
 
 }
