@@ -8,10 +8,10 @@
     </parent>
 
     <artifactId>train-generator</artifactId>
-<!--    <packaging>jar</packaging>-->
+    <!--    <packaging>jar</packaging>-->
 
     <name>train-generator</name>
-<!--    <url>http://maven.apache.org</url>-->
+    <!--    <url>http://maven.apache.org</url>-->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -73,9 +73,10 @@
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
                 <version>1.4.0</version>
                 <configuration>
-                    <!--                    <configurationFile>/src/main/resources/generator-config-member.xml</configurationFile>-->
-                                        <configurationFile>src/main/resources/generator-config-business.xml</configurationFile>
-<!--                    <configurationFile>src/main/resources/generator-config-batch.xml</configurationFile>-->
+<!--                    <configurationFile>${project.basedir}/src/main/resources/generator-config-member.xml</configurationFile>-->
+                    <configurationFile>/src/main/resources/generator-config-member.xml</configurationFile>
+                    <!--                    <configurationFile>src/main/resources/generator-config-business.xml</configurationFile>-->
+                    <!--                    <configurationFile>src/main/resources/generator-config-batch.xml</configurationFile>-->
                     <overwrite>true</overwrite>
                     <verbose>true</verbose>
                 </configuration>

@@ -38,7 +38,7 @@
 <!--        </jdbcConnection>-->
 
         <!-- domain类的位置 targetProject是相对pom.xml的路径-->
-        <javaModelGenerator targetProject="../${projectName}/src/main/java" targetPackage="com.example.member.domain">
+        <javaModelGenerator targetProject="../train-member/src/main/java" targetPackage="com.example.member.domain">
             <!-- 是否允许子包，即targetPackage.schemaName.tableName -->
             <property name="enableSubPackages" value="true"/>
             <!-- 从数据库返回的值去掉前后空格 -->
@@ -59,7 +59,7 @@
 
 
 <!--        <table tableName="${tableName}"/>-->
-        <table tableName="passenger" domainObjectName="Passenger"/>
-        <!--<table tableName="ticket" domainObjectName="Ticket"/>-->
+<!--        <table tableName="passenger" domainObjectName="Passenger"/>-->
+        <table tableName="ticket" domainObjectName="Ticket"/>
     </context>
 </generatorConfiguration>
