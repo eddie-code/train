@@ -28,7 +28,10 @@ const routes = [
         }, {
             path: 'order',
             component: () => import('../views/main/OrderView.vue'),
-        },]
+        }, {
+            path: 'my-ticket',
+            component: () => import('../views/main/My-TicketView.vue')
+        }, ]
     }, {
         // 当直接访问域名，重定向到欢迎页
         path: '',

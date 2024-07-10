@@ -2,6 +2,7 @@ package com.example.member.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.common.resp.PageResp;
@@ -44,8 +45,10 @@ public class TicketServiceImpl implements TicketService {
     public PageResp<TicketQueryResp> queryList(TicketQueryReq req) {
         log.info("查询条件：{}", req);
         QueryWrapper<Ticket> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda()
-            .orderByDesc(Ticket::getId);
+        if (ObjUtil.isNotNull(req.getMemberId())) {
+            queryWrapper.lambda().eq(Ticket::getMemberId, req.getMemberId());
+        }
+        queryWrapper.lambda().orderByDesc(Ticket::getId);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
