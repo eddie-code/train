@@ -2,19 +2,16 @@ package com.example.business.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.example.business.domain.ConfirmOrder;
 import com.example.business.domain.DailyTrainSeat;
 import com.example.business.domain.DailyTrainTicket;
-import com.example.business.enums.ConfirmOrderStatusEnum;
-import com.example.business.mapper.ConfirmOrderMapper;
+import com.example.business.feign.MemberFeign;
 import com.example.business.mapper.DailyTrainSeatMapper;
 import com.example.business.mapper.cust.DailyTrainTicketMapperCust;
-import com.example.business.req.ConfirmOrderDoReq;
 import com.example.business.req.ConfirmOrderTicketReq;
 import com.example.business.service.AfterConfirmOrderService;
+import com.example.common.context.LoginMemberContext;
+import com.example.common.req.MemberTicketReq;
 import com.example.common.resp.CommonResp;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +34,9 @@ public class AfterConfirmOrderServiceImpl implements AfterConfirmOrderService {
     @Autowired
     private DailyTrainTicketMapperCust dailyTrainTicketMapperCust;
 
+    @Autowired
+    private MemberFeign memberFeign;
+
     /**
      * 选中座位后事务处理：
      * 座位表修改售卖情况sell；
@@ -46,8 +46,9 @@ public class AfterConfirmOrderServiceImpl implements AfterConfirmOrderService {
      */
     @Transactional
     @Override
-    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> fianlSeatList) {
-        for (DailyTrainSeat dailyTrainSeat : fianlSeatList) {
+    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> fianlSeatList, List<ConfirmOrderTicketReq> tickets) {
+        for (int j = 0; j < fianlSeatList.size(); j++) {
+            DailyTrainSeat dailyTrainSeat = fianlSeatList.get(j);
             if (StrUtil.isNotBlank(dailyTrainSeat.getSell())) {
                 // 更新指定的列
                 LambdaUpdateWrapper<DailyTrainSeat> updateWrapper = new LambdaUpdateWrapper<>();
@@ -105,6 +106,24 @@ public class AfterConfirmOrderServiceImpl implements AfterConfirmOrderService {
                         maxStartIndex,
                         minEndIndex,
                         maxEndIndex);
+
+                // 调用会员服务接口，为会员增加一张车票
+                MemberTicketReq memberTicketReq = new MemberTicketReq();
+                memberTicketReq.setMemberId(LoginMemberContext.getId());
+                memberTicketReq.setPassengerId(tickets.get(j).getPassengerId());
+                memberTicketReq.setPassengerName(tickets.get(j).getPassengerName());
+                memberTicketReq.setTrainDate(dailyTrainTicket.getDate());
+                memberTicketReq.setTrainCode(dailyTrainTicket.getTrainCode());
+                memberTicketReq.setCarriageIndex(dailyTrainSeat.getCarriageIndex());
+                memberTicketReq.setSeatRow(dailyTrainSeat.getRow());
+                memberTicketReq.setSeatCol(dailyTrainSeat.getCol());
+                memberTicketReq.setStartStation(dailyTrainTicket.getStart());
+                memberTicketReq.setStartTime(dailyTrainTicket.getStartTime());
+                memberTicketReq.setEndStation(dailyTrainTicket.getEnd());
+                memberTicketReq.setEndTime(dailyTrainTicket.getEndTime());
+                memberTicketReq.setSeatType(dailyTrainSeat.getSeatType());
+                CommonResp<Object> commonResp = memberFeign.save(memberTicketReq);
+                log.info("调用member接口，返回：{}", commonResp);
 
             }
         }
