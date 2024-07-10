@@ -2,7 +2,7 @@
   <p>
     <a-space>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
-      
+
     </a-space>
   </p>
   <a-table :dataSource="tickets"
@@ -15,7 +15,7 @@
       </template>
       <template v-else-if="column.dataIndex === 'seatCol'">
         <span v-for="item in SEAT_COL_ARRAY" :key="item.code">
-          <span v-if="item.code === record.seatCol">
+          <span v-if="item.code === record.seatCol && item.type === record.seatType">
             {{item.desc}}
           </span>
         </span>
@@ -70,29 +70,19 @@ export default defineComponent({
     let loading = ref(false);
     const columns = [
     {
-      title: '会员id',
-      dataIndex: 'memberId',
-      key: 'memberId',
+        title: '乘客姓名',
+        dataIndex: 'passengerName',
+        key: 'passengerName',
     },
     {
-      title: '乘客id',
-      dataIndex: 'passengerId',
-      key: 'passengerId',
+        title: '日期',
+        dataIndex: 'trainDate',
+        key: 'trainDate',
     },
     {
-      title: '乘客姓名',
-      dataIndex: 'passengerName',
-      key: 'passengerName',
-    },
-    {
-      title: '日期',
-      dataIndex: 'trainDate',
-      key: 'trainDate',
-    },
-    {
-      title: '车次编号',
-      dataIndex: 'trainCode',
-      key: 'trainCode',
+        title: '车次编号',
+        dataIndex: 'trainCode',
+        key: 'trainCode',
     },
     {
       title: '箱序',
