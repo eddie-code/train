@@ -1,5 +1,6 @@
 package com.example.business.service;
 
+import com.example.business.domain.ConfirmOrder;
 import com.example.business.domain.DailyTrainSeat;
 import com.example.business.domain.DailyTrainTicket;
 import com.example.business.req.ConfirmOrderTicketReq;
@@ -14,6 +15,7 @@ public interface AfterConfirmOrderService {
 
     void afterDoConfirm(DailyTrainTicket dailyTrainTicket,
                         List<DailyTrainSeat> fianlSeatList,
-                        List<ConfirmOrderTicketReq> tickets);
+                        List<ConfirmOrderTicketReq> tickets,
+                        ConfirmOrder confirmOrder);
 
 }
