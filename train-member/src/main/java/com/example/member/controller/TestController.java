@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description
  */
 @RestController
-//@RefreshScope
+@RefreshScope
 public class TestController {
 
     @Value("${test.nacos}")

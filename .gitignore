@@ -34,3 +34,4 @@ build/
 
 ### 内部生成 ###
 log/
+httpRequests/
