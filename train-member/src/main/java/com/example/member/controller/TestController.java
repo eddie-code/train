@@ -18,14 +18,14 @@ public class TestController {
     @Value("${test.nacos}")
     private String testNacos;
 
-//    @Autowired
-//    Environment environment;
+    @Autowired
+    Environment environment;
 
     @GetMapping("/hello")
     public String hello() {
-        return String.format("Hello %s!", testNacos);
-//        String port = environment.getProperty("local.server.port");
-//        return String.format("Hello %s! 端口：%s", testNacos, port);
+//        return String.format("Hello %s!", testNacos);
+        String port = environment.getProperty("local.server.port");
+        return String.format("Hello %s! 端口：%s", testNacos, port);
     }
 
 }
