@@ -98,6 +98,8 @@ public class TrainServiceImpl implements TrainService {
     @Override
     public List<TrainQueryResp> queryAll() {
         List<Train> trainList = selectAll();
+        // LOG.info("再查一次");
+        // trainList = selectAll();
         return BeanUtil.copyToList(trainList, TrainQueryResp.class);
     }
 
