@@ -2,9 +2,11 @@ package com.example.business.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.business.domain.Train;
+import org.apache.ibatis.annotations.CacheNamespace;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@CacheNamespace // MP二级缓存
 public interface TrainMapper extends BaseMapper<Train> {
 //    long countByExample(TrainExample example);
 //
