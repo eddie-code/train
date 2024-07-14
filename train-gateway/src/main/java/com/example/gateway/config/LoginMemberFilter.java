@@ -29,7 +29,7 @@ public class LoginMemberFilter implements Ordered, GlobalFilter {
 
         // 排除不需要拦截的请求
         if (path.contains("/admin") // *后台管理系统*
-//                || path.contains("/redis")
+                || path.contains("/redis")
                 || path.contains("/hello") // 测试接口
                 || path.contains("/member/member/login") // 登录接口
                 || path.contains("/member/member/send-code") // 发送验证码接口
