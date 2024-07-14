@@ -23,5 +23,5 @@ public interface DailyTrainTicketService {
 
     PageResp<DailyTrainTicketQueryResp> queryList2(DailyTrainTicketQueryReq req);
 
-//    PageResp<DailyTrainTicketQueryResp> queryList3(DailyTrainTicketQueryReq req);
+    PageResp<DailyTrainTicketQueryResp> queryList3(DailyTrainTicketQueryReq req);
 }

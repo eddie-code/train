@@ -63,12 +63,12 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
         }
     }
 
-//    @Cacheable(value = "DailyTrainTicketService.queryList3")
-//    @Override
-//    public PageResp<DailyTrainTicketQueryResp> queryList3(DailyTrainTicketQueryReq req) {
-//        log.info("测试缓存击穿");
-//        return null;
-//    }
+    @Cacheable(value = "DailyTrainTicketService.queryList3")
+    @Override
+    public PageResp<DailyTrainTicketQueryResp> queryList3(DailyTrainTicketQueryReq req) {
+        log.info("测试缓存击穿");
+        return null;
+    }
 
     /**
      * 1. 比如[DailyTrainTicketService.queryList]设置了60s过期,
@@ -89,7 +89,12 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
     @Cacheable(value = "DailyTrainTicketService.queryList")
     @Override
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
-        // TODO 后续增加抢锁的动作
+        // 去缓存里取数据，因数据库本身就没数据而造成缓存穿透
+        // if (有数据) { null []
+        //     return
+        // } else {
+        //     去数据库取数据
+        // }
         log.info("查询条件：{}", req);
         QueryWrapper<DailyTrainTicket> queryWrapper = new QueryWrapper<>();
         if (ObjUtil.isNotNull(req.getDate())) {
