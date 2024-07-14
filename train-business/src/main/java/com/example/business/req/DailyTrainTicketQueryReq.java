@@ -33,6 +33,9 @@ public class DailyTrainTicketQueryReq extends PageReq {
      */
     private String end;
 
+    /**
+     * 为了spring本地缓存所以添加父类的分页参数
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,6 +43,9 @@ public class DailyTrainTicketQueryReq extends PageReq {
         return Objects.equals(date, that.date) && Objects.equals(trainCode, that.trainCode) && Objects.equals(start, that.start) && Objects.equals(end, that.end) && Objects.equals(((DailyTrainTicketQueryReq) o).getPage(), that.getPage()) && Objects.equals(((DailyTrainTicketQueryReq) o).getSize(), that.getSize());
     }
 
+    /**
+     * 为了spring本地缓存所以添加父类的分页参数
+     */
     @Override
     public int hashCode() {
         return Objects.hash(date, trainCode, start, end, getPage(), getSize());

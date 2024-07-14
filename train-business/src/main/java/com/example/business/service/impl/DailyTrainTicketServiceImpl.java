@@ -25,6 +25,8 @@ import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +63,20 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
         }
     }
 
+//    @Cacheable(value = "DailyTrainTicketService.queryList3")
+//    @Override
+//    public PageResp<DailyTrainTicketQueryResp> queryList3(DailyTrainTicketQueryReq req) {
+//        log.info("测试缓存击穿");
+//        return null;
+//    }
+
+    @CachePut(value = "DailyTrainTicketService.queryList")
+    @Override
+    public PageResp<DailyTrainTicketQueryResp> queryList2(DailyTrainTicketQueryReq req) {
+        return queryList(req);
+    }
+
+    @Cacheable(value = "DailyTrainTicketService.queryList")
     @Override
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
         log.info("查询条件：{}", req);

@@ -20,4 +20,8 @@ public interface DailyTrainTicketService {
     void genDaily(DailyTrain dailyTrain, Date date, String code);
 
     DailyTrainTicket selectByUnique(Date date, String trainCode, String start, String end);
+
+    PageResp<DailyTrainTicketQueryResp> queryList2(DailyTrainTicketQueryReq req);
+
+//    PageResp<DailyTrainTicketQueryResp> queryList3(DailyTrainTicketQueryReq req);
 }
