@@ -70,6 +70,16 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
 //        return null;
 //    }
 
+    /**
+     * 1. 比如[DailyTrainTicketService.queryList]设置了60s过期,
+     * 可以增加定时任务: 每隔30s, 调用queryList2()主动刷新缓存,
+     * 此时, 缓存时间会变成60s, 可以从redis客户端工具查看超时时间
+     *
+     * 2. 针对数据库查询,
+     * 增加分布式锁, 100个请求, 只有一个拿到锁, 去查数据库,
+     * 其他99个请求都快速失败, 告诉用户稍后重试
+     *
+     */
     @CachePut(value = "DailyTrainTicketService.queryList")
     @Override
     public PageResp<DailyTrainTicketQueryResp> queryList2(DailyTrainTicketQueryReq req) {
@@ -79,6 +89,7 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
     @Cacheable(value = "DailyTrainTicketService.queryList")
     @Override
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
+        // TODO 后续增加抢锁的动作
         log.info("查询条件：{}", req);
         QueryWrapper<DailyTrainTicket> queryWrapper = new QueryWrapper<>();
         if (ObjUtil.isNotNull(req.getDate())) {
@@ -94,7 +105,7 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
             queryWrapper.lambda().eq(DailyTrainTicket::getEnd, req.getEnd());
         }
         queryWrapper.lambda()
-            .orderByDesc(DailyTrainTicket::getId);
+                .orderByDesc(DailyTrainTicket::getId);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
