@@ -2,6 +2,8 @@
 // SESSION_ORDER = "SESSION_ORDER";
 // SESSION_TICKET_PARAMS = "SESSION_TICKET_PARAMS";
 
+SESSION_ALL_TRAIN = "SESSION_ALL_TRAIN";
+
 /**
  *  封装存储Session:
  *      为什么不直接调用 sessionStorage.getItem(key), 原生这个只能操作字符串,
