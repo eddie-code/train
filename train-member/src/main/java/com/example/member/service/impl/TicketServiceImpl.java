@@ -13,6 +13,7 @@ import com.example.common.req.MemberTicketReq;
 import com.example.member.req.TicketQueryReq;
 import com.example.member.resp.TicketQueryResp;
 import com.example.member.service.TicketService;
+import io.seata.core.context.RootContext;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void save(MemberTicketReq req) {
+        //需要和 train-business.AfterConfirmOrderServiceImpl.afterDoConfirm 的事务ID一样
+        log.info("Seata全局事务ID: =================>{}", RootContext.getXID());
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
 //        if (ObjectUtil.isNull(ticket.getId())) {
@@ -38,6 +41,11 @@ public class TicketServiceImpl implements TicketService {
 //        } else {
 //            ticket.setUpdateTime(now);
 //            ticketMapper.updateById(ticket);
+//        }
+
+        // 模拟被调用方出现异常
+//        if (1 == 1) {
+//            throw new RuntimeException("模拟被调用方出现异常");
 //        }
     }
 

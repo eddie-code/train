@@ -52,4 +52,8 @@
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
+
+    <logger name="io.seata" level="INFO"/>
+    <logger name="com.alibaba.nacos" level="ERROR"/>
+
 </configuration>

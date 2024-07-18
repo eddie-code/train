@@ -16,6 +16,8 @@ import com.example.business.service.AfterConfirmOrderService;
 import com.example.common.context.LoginMemberContext;
 import com.example.common.req.MemberTicketReq;
 import com.example.common.resp.CommonResp;
+import io.seata.core.context.RootContext;
+import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,9 +54,11 @@ public class AfterConfirmOrderServiceImpl implements AfterConfirmOrderService {
      * 为会员增加购票记录
      * 更新确认订单为成功
      */
-    @Transactional
+//    @Transactional
+    @GlobalTransactional  // 开启分布式事务
     @Override
-    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> fianlSeatList, List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) {
+    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> fianlSeatList, List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) throws Exception {
+        log.info("Seata全局事务ID: =================>{}", RootContext.getXID());
         for (int j = 0; j < fianlSeatList.size(); j++) {
             DailyTrainSeat dailyTrainSeat = fianlSeatList.get(j);
             if (StrUtil.isNotBlank(dailyTrainSeat.getSell())) {
@@ -140,7 +144,11 @@ public class AfterConfirmOrderServiceImpl implements AfterConfirmOrderService {
                         .set(ConfirmOrder::getStatus, ConfirmOrderStatusEnum.SUCCESS.getCode());
                 confirmOrderMapper.update(null, uw);
 
-
+                // 模拟调用方出现异常
+                 Thread.sleep(10000);
+                 if (1 == 1) {
+                     throw new Exception("测试异常");
+                 }
             }
         }
     }
