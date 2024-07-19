@@ -86,7 +86,7 @@ public class DailyTrainTicketServiceImpl implements DailyTrainTicketService {
         return queryList(req);
     }
 
-    @Cacheable(value = "DailyTrainTicketService.queryList")
+//    @Cacheable(value = "DailyTrainTicketService.queryList")
     @Override
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
         // 常见的缓存过期策略

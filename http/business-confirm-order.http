@@ -1,0 +1,29 @@
+POST http://localhost:8000/business/confirm-order/do
+Content-Type: application/json
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjEzNjgxMTcsIm1vYmlsZSI6IjEzODAwMTM4MDAwIiwiaWQiOjE3MTY2MTkwNjU4MjMsImV4cCI6MTcyMTQ1NDUxNywiaWF0IjoxNzIxMzY4MTE3fQ.zvOv207MUU5dUO7zNilVKZkCIIp4161Op_0EVrNYhjU
+
+{
+  "dailyTrainTicketId": 1814175462952407040,
+  "date": 1722441600000,
+  "end": "北京",
+  "start": "深圳",
+  "tickets": [
+    {
+      "passengerId": 1808040641020694528,
+      "passengerIdCard": "440105199108171235",
+      "passengerName": "lisi",
+      "passengerType": "3",
+      "seatTypeCode": "1"
+    },
+    {
+      "passengerId": 1798971999134027776,
+      "passengerIdCard": "440105199108171235",
+      "passengerName": "wangwu",
+      "passengerType": "2",
+      "seatTypeCode": "1"
+    }
+  ],
+  "trainCode": "D1"
+}
+
+###
