@@ -102,7 +102,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     }
 
     @Override
-    public void doConfirm(ConfirmOrderDoReq req) {
+    public synchronized void doConfirm(ConfirmOrderDoReq req) {
 
         // 省略业务数据校验，如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已买过
 
