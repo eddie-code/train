@@ -28,13 +28,16 @@ import com.example.common.exception.BusinessException;
 import com.example.common.exception.BusinessExceptionEnum;
 import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -54,6 +57,9 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
     @Autowired
     private AfterConfirmOrderService afterConfirmOrderService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public void save(ConfirmOrderDoReq req) {
@@ -103,6 +109,16 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
     @Override
     public synchronized void doConfirm(ConfirmOrderDoReq req) {
+
+        String key = req.getDate() + "-" + req.getTrainCode();
+        Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(key, key, 5, TimeUnit.SECONDS);
+        if (Boolean.TRUE.equals(setIfAbsent)) {
+            log.info("恭喜，抢到锁了！key：{}", key);
+        } else {
+            // 只是没抢到锁，并不知道票抢完了没，所以提示稍候再试
+             log.info("很遗憾，没抢到锁！key：{}", key);
+             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+        }
 
         // 省略业务数据校验，如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已买过
 
