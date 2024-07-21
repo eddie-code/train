@@ -3,6 +3,7 @@ package com.example.business.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -109,15 +110,14 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
     @Override
     public synchronized void doConfirm(ConfirmOrderDoReq req) {
-
-        String key = req.getDate() + "-" + req.getTrainCode();
-        Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(key, key, 5, TimeUnit.SECONDS);
+        String lockKey = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
+        Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
         if (Boolean.TRUE.equals(setIfAbsent)) {
-            log.info("恭喜，抢到锁了！key：{}", key);
+            log.info("恭喜，抢到锁了！lockKey：{}", lockKey);
         } else {
             // 只是没抢到锁，并不知道票抢完了没，所以提示稍候再试
-             log.info("很遗憾，没抢到锁！key：{}", key);
-             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+            log.info("很遗憾，没抢到锁！lockKey：{}", lockKey);
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
         }
 
         // 省略业务数据校验，如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已买过
@@ -218,18 +218,23 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         log.info("最终选座：{}", finalSeatList);
 
         // 选中座位后事务处理：
-            // 选中座位后事务处理：
-            // 座位表修改售卖情况sell；
-            // 余票详情表修改余票；
-            // 为会员增加购票记录
-            // 更新确认订单为成功
-    try {
-        afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeatList, tickets, confirmOrder);
-    } catch (Exception e) {
-        log.error("保存购票信息失败", e);
-        throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_EXCEPTION);
+        // 选中座位后事务处理：
+        // 座位表修改售卖情况sell；
+        // 余票详情表修改余票；
+        // 为会员增加购票记录
+        // 更新确认订单为成功
+        try {
+            afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeatList, tickets, confirmOrder);
+        } catch (Exception e) {
+            log.error("保存购票信息失败", e);
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_EXCEPTION);
+        }
+
+        // 删除分布式锁
+        log.info("购票流程结束，释放锁！lockKey：{}", lockKey);
+        redisTemplate.delete(lockKey);
+
     }
-}
 
     private static void reduceTickets(ConfirmOrderDoReq req, DailyTrainTicket dailyTrainTicket) {
         // 获取每张票
@@ -300,7 +305,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 
                 // 判断当前座位不能被选中过
                 boolean alreadyChooseFlag = false;
-                for (DailyTrainSeat finalSeat : finalSeatList){
+                for (DailyTrainSeat finalSeat : finalSeatList) {
                     if (finalSeat.getId().equals(dailyTrainSeat.getId())) {
                         alreadyChooseFlag = true;
                         break;
