@@ -109,7 +109,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">100</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -164,7 +164,7 @@
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">token</stringProp>
-                <stringProp name="Header.value">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjE1MjM1MjksIm1vYmlsZSI6IjEzODAwMTM4MDAwIiwiaWQiOjE3MTY2MTkwNjU4MjMsImV4cCI6MTcyMTYwOTkyOSwiaWF0IjoxNzIxNTIzNTI5fQ.myuJIGOIEvq0-5NZIUJQ9VJocwlGXL8nX9fLgLjfSSA</stringProp>
+                <stringProp name="Header.value">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjE2NTYwMjYsIm1vYmlsZSI6IjEzODAwMTM4MDAwIiwiaWQiOjE3MTY2MTkwNjU4MjMsImV4cCI6MTcyMTc0MjQyNiwiaWF0IjoxNzIxNjU2MDI2fQ.ZA9WieM_PfF_rKdgh5hYSTU3jkCJJJ2KeofZsPCZuME</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
