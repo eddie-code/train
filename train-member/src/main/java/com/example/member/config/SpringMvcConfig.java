@@ -24,7 +24,7 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(logInterceptor);
 
-        // 路径不要包含context-path
+        // 路径不要包含context-path, 比如 "/member/hello" 写成 "/hello" 才是正确
         registry.addInterceptor(memberInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
