@@ -30,7 +30,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public void save(MemberTicketReq req) {
         //需要和 train-business.AfterConfirmOrderServiceImpl.afterDoConfirm 的事务ID一样
-        log.info("Seata全局事务ID: =================>{}", RootContext.getXID());
+//        log.info("Seata全局事务ID: =================>{}", RootContext.getXID());
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
 //        if (ObjectUtil.isNull(ticket.getId())) {

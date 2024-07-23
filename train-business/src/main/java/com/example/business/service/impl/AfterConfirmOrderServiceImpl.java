@@ -55,10 +55,10 @@ public class AfterConfirmOrderServiceImpl implements AfterConfirmOrderService {
      * 更新确认订单为成功
      */
 //    @Transactional
-    @GlobalTransactional  // 开启分布式事务
+//    @GlobalTransactional  // 开启分布式事务
     @Override
     public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> fianlSeatList, List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) throws Exception {
-        log.info("Seata全局事务ID: =================>{}", RootContext.getXID());
+//        log.info("Seata全局事务ID: =================>{}", RootContext.getXID());
         for (int j = 0; j < fianlSeatList.size(); j++) {
             DailyTrainSeat dailyTrainSeat = fianlSeatList.get(j);
             if (StrUtil.isNotBlank(dailyTrainSeat.getSell())) {
