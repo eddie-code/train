@@ -115,53 +115,58 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     @Override
     public synchronized void doConfirm(ConfirmOrderDoReq req) {
         String lockKey = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
-//        // setnx 设置分布式锁，5秒后自动释放
-//        Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
-//        if (Boolean.TRUE.equals(setIfAbsent)) {
-//            log.info("恭喜，抢到锁了！lockKey：{}", lockKey);
-//
-//        } else {
-//            // 只是没抢到锁，并不知道票抢完了没，所以提示稍候再试
-//            log.info("很遗憾，没抢到锁！lockKey：{}", lockKey);
-//            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
-//        }
+        // setnx 设置分布式锁，5秒后自动释放
+        Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
+        if (Boolean.TRUE.equals(setIfAbsent)) {
+            log.info("恭喜，抢到锁了！lockKey：{}", lockKey);
+        } else {
+            // 只是没抢到锁，并不知道票抢完了没，所以提示稍候再试
+            log.info("很遗憾，没抢到锁！lockKey：{}", lockKey);
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+        }
 
-        RLock lock = null;
-
+//        RLock lock = null;
+        /*
+            关于红锁，看16.7节：
+            A B C D E
+            1: A B C D E
+            2: C D E
+            3: C
+        */
         try {
-            // 使用redisson，自带看门狗
-            lock = redissonClient.getLock(lockKey);
-
-            // 红锁的写法
-            // RedissonRedLock redissonRedLock = new RedissonRedLock(lock, lock, lock);
-            // boolean tryLock1 = redissonRedLock.tryLock(0, TimeUnit.SECONDS);
-
-            /**
-             waitTime – the maximum time to acquire the lock 等待获取锁时间(最大尝试获得锁的时间)，超时返回false
-             leaseTime – lease time 锁时长，即n秒后自动释放锁
-             time unit – time unit 时间单位
-
-             Redisson提供的分布式锁是支持锁自动续期的，也就是说，如果线程仍旧没有执行完，
-             那么redisson会自动给redis中的目标key延长超时时间，
-             这在Redisson中称之为 Watch Dog 机制。默认情况下，看门狗的检查锁的超时时间是30秒钟，
-             也可以通过修改来另行指定。拿锁失败时会不停的重试，具有Watch Dog 自动延期机制
-             默认续30s 每隔30/3=10 秒续到30s
-             */
-            // boolean tryLock = lock.tryLock(30, 10, TimeUnit.SECONDS); // 不带看门狗
-            boolean tryLock = lock.tryLock(0, TimeUnit.SECONDS); // 带看门狗,
-            if (tryLock) {
-                log.info("恭喜，抢到锁了！");
-                // 可以把下面这段放开，只用一个线程来测试，看看redisson的看门狗效果
-                 for (int i = 0; i < 30; i++) {
-                     Long expire = redisTemplate.opsForValue().getOperations().getExpire(lockKey);
-                     log.info("锁过期时间还有：{}", expire);
-                     Thread.sleep(1000);
-                 }
-            } else {
-                // 只是没抢到锁，并不知道票抢完了没，所以提示稍候再试
-                log.info("很遗憾，没抢到锁");
-                throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
-            }
+//            // 使用redisson，自带看门狗
+//            lock = redissonClient.getLock(lockKey);
+//
+//            // 红锁的写法
+//            // RedissonRedLock redissonRedLock = new RedissonRedLock(lock, lock, lock);
+//            // boolean tryLock1 = redissonRedLock.tryLock(0, TimeUnit.SECONDS);
+//
+//            /**
+//             waitTime – the maximum time to acquire the lock 等待获取锁时间(最大尝试获得锁的时间)，超时返回false
+//             leaseTime – lease time 锁时长，即n秒后自动释放锁
+//             time unit – time unit 时间单位
+//
+//             Redisson提供的分布式锁是支持锁自动续期的，也就是说，如果线程仍旧没有执行完，
+//             那么redisson会自动给redis中的目标key延长超时时间，
+//             这在Redisson中称之为 Watch Dog 机制。默认情况下，看门狗的检查锁的超时时间是30秒钟，
+//             也可以通过修改来另行指定。拿锁失败时会不停的重试，具有Watch Dog 自动延期机制
+//             默认续30s 每隔30/3=10 秒续到30s
+//             */
+//            // boolean tryLock = lock.tryLock(30, 10, TimeUnit.SECONDS); // 不带看门狗
+//            boolean tryLock = lock.tryLock(0, TimeUnit.SECONDS); // 带看门狗,
+//            if (tryLock) {
+//                log.info("恭喜，抢到锁了！");
+//                // 可以把下面这段放开，只用一个线程来测试，看看redisson的看门狗效果
+//                 for (int i = 0; i < 30; i++) {
+//                     Long expire = redisTemplate.opsForValue().getOperations().getExpire(lockKey);
+//                     log.info("锁过期时间还有：{}", expire);
+//                     Thread.sleep(1000);
+//                 }
+//            } else {
+//                // 只是没抢到锁，并不知道票抢完了没，所以提示稍候再试
+//                log.info("很遗憾，没抢到锁");
+//                throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+//            }
 
             // 省略业务数据校验，如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已买过
 
@@ -276,13 +281,16 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
             // 删除分布式锁
 //            log.info("购票流程结束，释放锁！lockKey：{}", lockKey);
 //            redisTemplate.delete(lockKey);
-        } catch (InterruptedException e) {
-            log.error("购票异常: ", e);
+//        } catch (InterruptedException e) {
+//            log.error("购票异常: ", e);
         } finally {
-            log.info("购票流程结束，释放锁！");
-            if (null != lock && lock.isHeldByCurrentThread()) {
-                lock.unlock();
-            }
+            // try finally不能包含加锁的那段代码，否则加锁失败会走到finally里，从而释放别的线程的锁
+            log.info("购票流程结束，释放锁！lockKey：{}", lockKey);
+            redisTemplate.delete(lockKey);
+//            log.info("购票流程结束，释放锁！");
+//            if (null != lock && lock.isHeldByCurrentThread()) {
+//                lock.unlock();
+//            }
         }
     }
 
