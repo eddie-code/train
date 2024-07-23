@@ -16,13 +16,10 @@ import com.example.business.service.AfterConfirmOrderService;
 import com.example.common.context.LoginMemberContext;
 import com.example.common.req.MemberTicketReq;
 import com.example.common.resp.CommonResp;
-import io.seata.core.context.RootContext;
-import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;

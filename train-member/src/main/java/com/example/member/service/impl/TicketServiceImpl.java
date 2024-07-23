@@ -13,7 +13,6 @@ import com.example.common.req.MemberTicketReq;
 import com.example.member.req.TicketQueryReq;
 import com.example.member.resp.TicketQueryResp;
 import com.example.member.service.TicketService;
-import io.seata.core.context.RootContext;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
