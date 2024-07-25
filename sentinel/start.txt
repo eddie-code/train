@@ -1,0 +1,8 @@
+下载v1.8.6.jar:
+https://github.com/alibaba/Sentinel/releases
+
+在CMD下使用如下命令启动控制台:
+java -Dserver.port=18080 -Dcsp.sentinel.dashboard.server=localhost:18080 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-1.8.6.jar
+
+Web address: http://localhost:18080
+帐号密码: sentinel/sentinel
