@@ -1,0 +1,21 @@
+// 编辑流控规则对应说明
+[
+  {
+    "resource": "doConfirm",  // 资源名称 @SentinelResource
+    "limitApp": "default",  // 针对来源
+    "grade": 1,  // 阈值类型
+    "count": 100,   // 单机阈值
+    "strategy": 0,    // 是否集群
+    "controlBehavior": 0,   // 流控模式
+    "clusterMode": false    // 流控效果
+  },
+  {
+    "resource": "confirmOrderDo",
+    "limitApp": "default",
+    "grade": 1,
+    "count": 4,
+    "strategy": 0,
+    "controlBehavior": 0,
+    "clusterMode": false
+  }
+]
