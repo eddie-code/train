@@ -94,3 +94,18 @@
     "clusterMode": false
   }
 ]
+
+
+// sentinel-batch-degrade
+
+[
+  {
+    "resource": "GET:http://train-business/business/hello",
+    "grade": 0,
+    "count": 201,
+    "timeWindow": 11,
+    "minRequestAmount": "6",
+    "statIntervalMs": 1000,
+    "slowRatioThreshold": 0.3
+  }
+]
