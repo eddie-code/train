@@ -53,3 +53,44 @@
     "clusterMode": false
   }
 ]
+
+// sentinel-business-flow
+// 正常情况下不会限流, 只有hello接口限流了, 才会关联hello1触发限流
+
+[
+  {
+    "resource": "hello",
+    "limitApp": "default",
+    "grade": 0,
+    "count": 5,
+    "strategy": 0,
+    "controlBehavior": 0,
+    "clusterMode": false
+  },
+  {
+    "resource": "hello1",
+    "limitApp": "default",
+    "grade": 0,
+    "count": 5,
+    "strategy": 1,
+    "refResource": "hello",  // 正常情况下不会限流, 只有hello接口限流了, 才会关联hello1触发限流
+    "controlBehavior": 0,
+    "clusterMode": false
+  }
+]
+
+
+// sentinel-business-flow
+// Nacos
+[
+  {
+    "resource": "hello2",
+    "limitApp": "default",
+    "grade": 0,
+    "count": 2,
+    "strategy": 2,
+    "refResource": "/hello1",  // 需要经过 hello1 才限制 hello2
+    "controlBehavior": 0,
+    "clusterMode": false
+  }
+]
