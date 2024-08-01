@@ -1,4 +1,5 @@
 // 编辑流控规则对应说明
+// sentinel
 [
   {
     "resource": "doConfirm",  // 资源名称 @SentinelResource
@@ -16,6 +17,39 @@
     "count": 4,
     "strategy": 0,
     "controlBehavior": 0,
+    "clusterMode": false
+  }
+]
+
+// sentinel-business-flow
+// 测试预热
+
+[
+  {
+    "resource": "hello",
+    "limitApp": "default",
+    "grade": 1,
+    "count": 10,
+    "strategy": 0,
+    "controlBehavior": 1,
+    "warmUpPeriodSec": 2,
+    "clusterMode": false
+  }
+]
+
+// sentinel-business-flow
+// 测试排队等待 (只能选择QPS, 不能选择并发数)
+// 和快速失败不同的是, 会有拒绝QPS的情况，而排队是按时间等待, 直到全部完成
+
+[
+  {
+    "resource": "hello",
+    "limitApp": "default",
+    "grade": 1,
+    "count": 10,
+    "strategy": 0,
+    "controlBehavior": 2,
+    "maxQueueingTimeMs": 1000,
     "clusterMode": false
   }
 ]
