@@ -97,7 +97,7 @@
 
 
 // sentinel-batch-degrade
-
+// 慢调用比例
 [
   {
     "resource": "GET:http://train-business/business/hello",
@@ -107,5 +107,31 @@
     "minRequestAmount": "6",
     "statIntervalMs": 1000,
     "slowRatioThreshold": 0.3
+  }
+]
+
+// sentinel-batch-degrade
+// 异常比例
+[
+  {
+    "resource": "GET:http://train-business/business/hello",
+    "grade": 1,
+    "count": 0.3,
+    "timeWindow": 3,
+    "minRequestAmount": "6",
+    "statIntervalMs": 1000
+  }
+]
+
+// sentinel-batch-degrade
+// 异常数
+[
+  {
+    "resource": "GET:http://train-business/business/hello",
+    "grade": 2,
+    "count": 3,
+    "timeWindow": 3,
+    "minRequestAmount": "6",
+    "statIntervalMs": 1000
   }
 ]

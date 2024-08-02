@@ -1,5 +1,6 @@
 package com.example.business.controller;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.example.business.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,11 @@ public class TestController {
 
     @SentinelResource("hello")
     @GetMapping("/hello")
-    public String hello() throws InterruptedException {
-        testService.hello2("hello");
+    public String hello() {
+        int i = RandomUtil.randomInt(1, 10);
+        if (i <= 2) {
+            throw new RuntimeException("测试异常");
+        }
         return "Hello World! Business!";
     }
 
