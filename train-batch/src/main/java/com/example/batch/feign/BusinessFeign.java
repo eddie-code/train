@@ -12,9 +12,9 @@ import java.util.Date;
  * @author lee
  * @description
  */
-//@FeignClient(value = "train-business", fallback = BusinessFeignFallback.class)
+@FeignClient(value = "train-business", fallback = BusinessFeignFallback.class)
 //@FeignClient(name = "train-business", url = "http://127.0.0.1:8002/business")
-@FeignClient("train-business")
+//@FeignClient("train-business")
 public interface BusinessFeign {
 
     @GetMapping("/business/hello")
