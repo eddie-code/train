@@ -32,6 +32,9 @@ const routes = [
         }, {
             path: 'business/',
             children: [{
+                path: 'sk-token',
+                component: () => import('../views/main/business/Sk-tokenView.vue'),
+            }, {
                 path: 'confirm-order',
                 component: () => import('../views/main/business/Confirm-orderView.vue'),
             }, {
