@@ -2,9 +2,14 @@ package com.example.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.business.domain.DailyTrainStation;
+import com.example.business.domain.SkTokenExample;
+import com.example.business.service.DailyTrainSeatService;
+import com.example.business.service.DailyTrainStationService;
 import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
 import com.example.business.domain.SkToken;
@@ -13,10 +18,12 @@ import com.example.business.req.SkTokenQueryReq;
 import com.example.business.req.SkTokenSaveReq;
 import com.example.business.resp.SkTokenQueryResp;
 import com.example.business.service.SkTokenService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +32,51 @@ public class SkTokenServiceImpl implements SkTokenService {
 
     @Autowired
     private SkTokenMapper skTokenMapper;
+
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
+
+    @Resource
+    private DailyTrainStationService dailyTrainStationService;
+
+
+    /**
+     * 初始化
+     */
+    @Override
+    public void genDaily(Date date, String trainCode) {
+        log.info("删除日期【{}】车次【{}】的令牌记录", DateUtil.formatDate(date), trainCode);
+//        SkTokenExample skTokenExample = new SkTokenExample();
+//        skTokenExample.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+//        skTokenMapper.deleteByExample(skTokenExample);
+
+        QueryWrapper<SkToken> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(SkToken::getTrainCode, trainCode)
+                .eq(SkToken::getDate, date);
+        skTokenMapper.delete(queryWrapper);
+
+        DateTime now = DateTime.now();
+        SkToken skToken = new SkToken();
+        skToken.setDate(date);
+        skToken.setTrainCode(trainCode);
+        skToken.setId(SnowUtil.getSnowflakeNextId());
+        skToken.setCreateTime(now);
+        skToken.setUpdateTime(now);
+
+        int seatCount = dailyTrainSeatService.countSeat(date, trainCode);
+        log.info("车次【{}】座位数：{}", trainCode, seatCount);
+
+        long stationCount = dailyTrainStationService.countByTrainCode(date, trainCode);
+        log.info("车次【{}】到站数：{}", trainCode, stationCount);
+
+        // 3/4需要根据实际卖票比例来定，一趟火车最多可以卖（seatCount * stationCount）张火车票
+        int count = (int) (seatCount * stationCount); // * 3/4);
+        log.info("车次【{}】初始生成令牌数：{}", trainCode, count);
+        skToken.setCount(count);
+
+        skTokenMapper.insert(skToken);
+    }
 
     @Override
     public void save(SkTokenSaveReq req) {

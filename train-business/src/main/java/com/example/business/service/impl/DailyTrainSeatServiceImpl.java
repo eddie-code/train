@@ -131,6 +131,11 @@ public class DailyTrainSeatServiceImpl implements DailyTrainSeatService {
     }
 
     @Override
+    public int countSeat(Date date, String trainCode) {
+        return countSeat(date, trainCode, null);
+    }
+
+    @Override
     public int countSeat(Date date, String trainCode, String seatType) {
         QueryWrapper<DailyTrainSeat> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()

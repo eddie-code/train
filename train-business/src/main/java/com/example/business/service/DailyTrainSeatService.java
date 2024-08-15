@@ -22,4 +22,6 @@ public interface DailyTrainSeatService {
     int countSeat(Date date, String trainCode, String code);
 
     List<DailyTrainSeat> selectByCarriage(Date date, String trainCode, Integer index);
+
+    int countSeat(Date date, String trainCode);
 }

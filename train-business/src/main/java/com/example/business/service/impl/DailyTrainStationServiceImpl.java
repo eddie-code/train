@@ -8,6 +8,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.business.domain.DailyTrainStation;
+import com.example.business.domain.DailyTrainStationExample;
 import com.example.business.domain.TrainStation;
 import com.example.business.mapper.DailyTrainStationMapper;
 import com.example.business.req.DailyTrainStationQueryReq;
@@ -110,5 +111,21 @@ public class DailyTrainStationServiceImpl implements DailyTrainStationService {
             dailyTrainStationMapper.insert(dailyTrainStation);
         }
         log.info("生成日期【{}】车次【{}】的车站信息结束", DateUtil.formatDate(date), trainCode);
+    }
+
+    /**
+     * 按车次查询全部车站
+     */
+    @Override
+    public long countByTrainCode(Date date, String trainCode) {
+//        DailyTrainStationExample example = new DailyTrainStationExample();
+//        example.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+//        long stationCount = dailyTrainStationMapper.countByExample(example);
+
+        QueryWrapper<DailyTrainStation> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(DailyTrainStation::getTrainCode, trainCode)
+                .eq(DailyTrainStation::getDate, date);
+        return dailyTrainStationMapper.selectCount(queryWrapper);
     }
 }

@@ -46,6 +46,9 @@ public class DailyTrainServiceImpl implements DailyTrainService {
     @Autowired
     private DailyTrainTicketService dailyTrainTicketService;
 
+    @Autowired
+    private SkTokenService skTokenService;
+
     @Override
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -148,7 +151,7 @@ public class DailyTrainServiceImpl implements DailyTrainService {
         dailyTrainTicketService.genDaily(dailyTrain, date, train.getCode());
 
         // 生成令牌余量数据
-//        skTokenService.genDaily(date, train.getCode());
+        skTokenService.genDaily(date, train.getCode());
 
         log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
     }
