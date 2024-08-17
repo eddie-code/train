@@ -77,11 +77,12 @@ public class SkTokenServiceImpl implements SkTokenService {
         int seatCount = dailyTrainSeatService.countSeat(date, trainCode);
         log.info("车次【{}】座位数：{}", trainCode, seatCount);
 
+        // 添加 date 参数
         long stationCount = dailyTrainStationService.countByTrainCode(date, trainCode);
         log.info("车次【{}】到站数：{}", trainCode, stationCount);
 
         // 3/4需要根据实际卖票比例来定，一趟火车最多可以卖（seatCount * stationCount）张火车票
-        int count = (int) (seatCount * stationCount); // * 3/4);
+        int count = (int) (seatCount * stationCount); // * 3/4); // 总的数量 = 座位数 * 到站数
         log.info("车次【{}】初始生成令牌数：{}", trainCode, count);
         skToken.setCount(count);
 
