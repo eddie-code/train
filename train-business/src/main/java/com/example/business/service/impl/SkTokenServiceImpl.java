@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.business.domain.DailyTrainStation;
 import com.example.business.domain.SkTokenExample;
+import com.example.business.enums.RedisKeyPreEnum;
 import com.example.business.mapper.cust.SkTokenMapperCust;
 import com.example.business.service.DailyTrainSeatService;
 import com.example.business.service.DailyTrainStationService;
@@ -20,12 +21,14 @@ import com.example.business.req.SkTokenSaveReq;
 import com.example.business.resp.SkTokenQueryResp;
 import com.example.business.service.SkTokenService;
 import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -43,6 +46,8 @@ public class SkTokenServiceImpl implements SkTokenService {
     @Autowired
     private SkTokenMapperCust skTokenMapperCust;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     /**
      * 初始化
@@ -102,7 +107,7 @@ public class SkTokenServiceImpl implements SkTokenService {
         log.info("查询条件：{}", req);
         QueryWrapper<SkToken> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-            .orderByDesc(SkToken::getId);
+                .orderByDesc(SkToken::getId);
 
         log.info("查询页码：{}", req.getPage());
         log.info("每页条数：{}", req.getSize());
@@ -134,6 +139,17 @@ public class SkTokenServiceImpl implements SkTokenService {
     @Override
     public boolean validSkToken(Date date, String trainCode, Long memberId) {
         log.info("会员【{}】获取日期【{}】车次【{}】的令牌开始", memberId, DateUtil.formatDate(date), trainCode);
+
+        // 先获取令牌锁，再校验令牌余量，防止机器人抢票，lockKey就是令牌，用来表示【谁能做什么】的一个凭证
+        String lockKey = RedisKeyPreEnum.SK_TOKEN + "-" + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
+        Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
+        if (Boolean.TRUE.equals(setIfAbsent)) {
+            log.info("恭喜，抢到令牌锁了！lockKey：{}", lockKey);
+        } else {
+            log.info("很遗憾，没抢到令牌锁！lockKey：{}", lockKey);
+            return false;
+        }
+
         // 令牌约等于库存，令牌没有了，就不再卖票，不需要再进入购票主流程去判断库存，判断令牌肯定比判断库存效率高
         int updateCount = skTokenMapperCust.decrease(date, trainCode);
         if (updateCount > 0) {
