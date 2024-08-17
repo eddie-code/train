@@ -1,14 +1,13 @@
 package com.example.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.business.domain.DailyTrainStation;
 import com.example.business.domain.SkTokenExample;
-import com.example.business.enums.LockKeyPreEnum;
 import com.example.business.enums.RedisKeyPreEnum;
 import com.example.business.mapper.cust.SkTokenMapperCust;
 import com.example.business.service.DailyTrainSeatService;
@@ -143,7 +142,7 @@ public class SkTokenServiceImpl implements SkTokenService {
         log.info("会员【{}】获取日期【{}】车次【{}】的令牌开始", memberId, DateUtil.formatDate(date), trainCode);
 
         // 先获取令牌锁，再校验令牌余量，防止机器人抢票，lockKey就是令牌，用来表示【谁能做什么】的一个凭证
-        String lockKey = LockKeyPreEnum.SK_TOKEN + "-" + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
+        String lockKey = RedisKeyPreEnum.SK_TOKEN + "-" + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
         Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
         if (Boolean.TRUE.equals(setIfAbsent)) {
             log.info("恭喜，抢到令牌锁了！lockKey：{}", lockKey);
@@ -152,14 +151,65 @@ public class SkTokenServiceImpl implements SkTokenService {
             return false;
         }
 
-        // 令牌约等于库存，令牌没有了，就不再卖票，不需要再进入购票主流程去判断库存，判断令牌肯定比判断库存效率高
-        int updateCount = skTokenMapperCust.decrease(date, trainCode);
-        if (updateCount > 0) {
-            // updateCount 大于0，说明令牌有效，可以进入购票主流程
-            return true;
+        // 先查询缓存
+        String skTokenCountKey = RedisKeyPreEnum.SK_TOKEN_COUNT + "-" + DateUtil.formatDate(date) + "-" + trainCode;
+        Object skTokenCount = redisTemplate.opsForValue().get(skTokenCountKey);
+        if (skTokenCount != null) {
+            log.info("缓存中有该车次令牌大闸的key：{}", skTokenCountKey);
+            Long count = redisTemplate.opsForValue().decrement(skTokenCountKey, 1);
+            if (count < 0L) {
+                log.error("获取令牌失败：{}", skTokenCountKey);
+                return false;
+            } else {
+                log.info("获取令牌后，令牌余数：{}", count);
+                // 每次都刷新缓存, 防止热点key失效, 防止缓存穿透
+                redisTemplate.expire(skTokenCountKey, 60, TimeUnit.SECONDS);
+                // 每获取5个令牌更新一次数据库
+                if (count % 5 == 0) {
+                    skTokenMapperCust.decrease(date, trainCode, 5);
+                }
+                return true;
+            }
         } else {
-            // updateCount 小于等于0，说明令牌无效，不能进入购票主流程
-            return false;
+            // 缓存没有情况下, 再查询数据库
+            log.info("缓存中没有该车次令牌大闸的key：{}", skTokenCountKey);
+            // 检查是否还有令牌
+            QueryWrapper<SkToken> queryWrapper = new QueryWrapper<>();
+            queryWrapper.lambda()
+                    .eq(SkToken::getDate, date)
+                    .eq(SkToken::getTrainCode, trainCode)
+                    .orderByDesc(SkToken::getId);
+            List<SkToken> tokenCountList = skTokenMapper.selectList(queryWrapper);
+            if (CollUtil.isEmpty(tokenCountList)) {
+                log.info("找不到日期【{}】车次【{}】的令牌记录", DateUtil.formatDate(date), trainCode);
+                return false;
+            }
+
+            SkToken skToken = tokenCountList.get(0);
+            if (skToken.getCount() <= 0) {
+                log.info("日期【{}】车次【{}】的令牌余量为0", DateUtil.formatDate(date), trainCode);
+                return false;
+            }
+
+            // 令牌还有余量
+            // 令牌余数-1
+            Integer count = skToken.getCount() - 1;
+            skToken.setCount(count);
+            log.info("将该车次令牌大闸放入缓存中，key: {}， count: {}", skTokenCountKey, count);
+            // 不需要更新数据库，只要放缓存即可
+            redisTemplate.opsForValue().set(skTokenCountKey, String.valueOf(count), 60, TimeUnit.SECONDS);
+            // skTokenMapper.updateByPrimaryKey(skToken);
+            return true;
         }
+
+        // 令牌约等于库存，令牌没有了，就不再卖票，不需要再进入购票主流程去判断库存，判断令牌肯定比判断库存效率高
+//        int updateCount = skTokenMapperCust.decrease(date, trainCode, 1);
+//        if (updateCount > 0) {
+//            // updateCount 大于0，说明令牌有效，可以进入购票主流程
+//            return true;
+//        } else {
+//            // updateCount 小于等于0，说明令牌无效，不能进入购票主流程
+//            return false;
+//        }
     }
 }

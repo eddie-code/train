@@ -127,7 +127,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
          }
 
          // 购票
-        String lockKey = LockKeyPreEnum.CONFIRM_ORDER + "-" + DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
+        String lockKey = RedisKeyPreEnum.CONFIRM_ORDER + "-" + DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
         // setnx 设置分布式锁，5秒后自动释放
         Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
         if (Boolean.TRUE.equals(setIfAbsent)) {
