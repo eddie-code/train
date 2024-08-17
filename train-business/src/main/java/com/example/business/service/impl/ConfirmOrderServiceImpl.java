@@ -17,9 +17,7 @@ import com.example.business.domain.ConfirmOrder;
 import com.example.business.domain.DailyTrainCarriage;
 import com.example.business.domain.DailyTrainSeat;
 import com.example.business.domain.DailyTrainTicket;
-import com.example.business.enums.ConfirmOrderStatusEnum;
-import com.example.business.enums.SeatColEnum;
-import com.example.business.enums.SeatTypeEnum;
+import com.example.business.enums.*;
 import com.example.business.mapper.ConfirmOrderMapper;
 import com.example.business.req.ConfirmOrderDoReq;
 import com.example.business.req.ConfirmOrderQueryReq;
@@ -129,7 +127,7 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
          }
 
          // 购票
-        String lockKey = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
+        String lockKey = LockKeyPreEnum.CONFIRM_ORDER + "-" + DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
         // setnx 设置分布式锁，5秒后自动释放
         Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
         if (Boolean.TRUE.equals(setIfAbsent)) {

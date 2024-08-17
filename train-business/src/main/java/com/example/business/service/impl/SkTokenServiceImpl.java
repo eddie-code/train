@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.business.domain.DailyTrainStation;
 import com.example.business.domain.SkTokenExample;
+import com.example.business.enums.LockKeyPreEnum;
 import com.example.business.enums.RedisKeyPreEnum;
 import com.example.business.mapper.cust.SkTokenMapperCust;
 import com.example.business.service.DailyTrainSeatService;
@@ -141,7 +142,7 @@ public class SkTokenServiceImpl implements SkTokenService {
         log.info("会员【{}】获取日期【{}】车次【{}】的令牌开始", memberId, DateUtil.formatDate(date), trainCode);
 
         // 先获取令牌锁，再校验令牌余量，防止机器人抢票，lockKey就是令牌，用来表示【谁能做什么】的一个凭证
-        String lockKey = RedisKeyPreEnum.SK_TOKEN + "-" + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
+        String lockKey = LockKeyPreEnum.SK_TOKEN + "-" + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
         Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
         if (Boolean.TRUE.equals(setIfAbsent)) {
             log.info("恭喜，抢到令牌锁了！lockKey：{}", lockKey);
