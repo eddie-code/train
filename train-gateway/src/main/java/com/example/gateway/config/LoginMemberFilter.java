@@ -33,7 +33,7 @@ public class LoginMemberFilter implements Ordered, GlobalFilter {
                 || path.contains("/hello") // 测试接口
                 || path.contains("/member/member/login") // 登录接口
                 || path.contains("/member/member/send-code") // 发送验证码接口
-//                || path.contains("/business/kaptcha")
+                || path.contains("/business/kaptcha") // 图片验证码接口
         ) {
             LOG.info("不需要登录验证：{}", path);
             return chain.filter(exchange);
