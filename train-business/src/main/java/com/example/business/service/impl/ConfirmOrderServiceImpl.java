@@ -63,6 +63,9 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Autowired
+    private SkTokenService skTokenService;
+
 //    @Autowired
 //    private RedissonClient redissonClient;
 
@@ -115,6 +118,17 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
     @SentinelResource(value = "doConfirm", blockHandler = "doConfirmBlock")
     @Override
     public synchronized void doConfirm(ConfirmOrderDoReq req) {
+
+         // 校验令牌余量
+         boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getId());
+         if (validSkToken) {
+             log.info("令牌校验通过");
+         } else {
+             log.info("令牌校验不通过");
+             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SK_TOKEN_FAIL);
+         }
+
+         // 购票
         String lockKey = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
         // setnx 设置分布式锁，5秒后自动释放
         Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);

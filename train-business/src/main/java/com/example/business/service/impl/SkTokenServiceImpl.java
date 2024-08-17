@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.business.domain.DailyTrainStation;
 import com.example.business.domain.SkTokenExample;
+import com.example.business.mapper.cust.SkTokenMapperCust;
 import com.example.business.service.DailyTrainSeatService;
 import com.example.business.service.DailyTrainStationService;
 import com.example.common.resp.PageResp;
@@ -38,6 +39,9 @@ public class SkTokenServiceImpl implements SkTokenService {
 
     @Resource
     private DailyTrainStationService dailyTrainStationService;
+
+    @Autowired
+    private SkTokenMapperCust skTokenMapperCust;
 
 
     /**
@@ -122,5 +126,22 @@ public class SkTokenServiceImpl implements SkTokenService {
     @Override
     public void delete(Long id) {
         skTokenMapper.deleteById(id);
+    }
+
+    /**
+     * 获取令牌
+     */
+    @Override
+    public boolean validSkToken(Date date, String trainCode, Long memberId) {
+        log.info("会员【{}】获取日期【{}】车次【{}】的令牌开始", memberId, DateUtil.formatDate(date), trainCode);
+        // 令牌约等于库存，令牌没有了，就不再卖票，不需要再进入购票主流程去判断库存，判断令牌肯定比判断库存效率高
+        int updateCount = skTokenMapperCust.decrease(date, trainCode);
+        if (updateCount > 0) {
+            // updateCount 大于0，说明令牌有效，可以进入购票主流程
+            return true;
+        } else {
+            // updateCount 小于等于0，说明令牌无效，不能进入购票主流程
+            return false;
+        }
     }
 }

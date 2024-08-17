@@ -16,4 +16,7 @@ public interface SkTokenService {
     void delete(Long id);
 
     void genDaily(Date date, String code);
+
+    boolean validSkToken(Date date, String trainCode, Long memberId);
+
 }
