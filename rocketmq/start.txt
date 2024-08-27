@@ -1,0 +1,14 @@
+CMD
+
+C:\Users\23107>E:
+
+E:\>cd E:\Develop\Apache\rocketmq-all-5.3.0-bin-release\bin
+
+E:\Develop\Apache\rocketmq-all-5.3.0-bin-release\bin>start mqnamesrv.cmd
+
+E:\Develop\Apache\rocketmq-all-5.3.0-bin-release\bin>start mqbroker.cmd -n localhost:9876 autoCreateTopicEnable=true
+
+
+
+使用 IDEA 启动 rocketmq-dashboard-1.0.0 (需要切换JDK8)
+JVM设置： -Drocketmq.namesrv.addr=127.0.0.1:9876
