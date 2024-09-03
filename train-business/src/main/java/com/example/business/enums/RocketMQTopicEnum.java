@@ -2,7 +2,7 @@ package com.example.business.enums;
 
 /**
  * @author lee
- * @description
+ * @description RocketMQ
  */
 public enum RocketMQTopicEnum {
 

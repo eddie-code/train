@@ -36,6 +36,9 @@ public class BeforeConfirmOrderServiceImpl implements BeforeConfirmOrderService 
     @Autowired
     private SkTokenService skTokenService;
 
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
+
     @SentinelResource(value = "beforeDoConfirm", blockHandler = "beforeDoConfirmBlock")
     @Override
     public void beforeDoConfirm(ConfirmOrderDoReq req) {
@@ -61,8 +64,11 @@ public class BeforeConfirmOrderServiceImpl implements BeforeConfirmOrderService 
             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
         }
 
-        // 可以购票 TODO： 发送MQ, 等待出票
-        log.info("准备发送MQ, 等待出票");
+        // 发送MQ排队购票
+        String reqJson = JSON.toJSONString(req);
+        log.info("排队购票，发送mq开始，消息：{}", reqJson);
+        rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(), reqJson);
+        log.info("排队购票，发送mq结束");
 
     }
 

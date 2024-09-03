@@ -100,6 +100,7 @@ https://github.com/alibaba/spring-cloud-alibaba/blob/2022.x/README-zh.md
                 </exclusions>
             </dependency>
 
+            <!--RocketMQ版本控制-->
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-spring-boot-starter</artifactId>
