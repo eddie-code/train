@@ -21,6 +21,7 @@ import com.example.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -86,6 +87,7 @@ public class BeforeConfirmOrderServiceImpl implements BeforeConfirmOrderService 
         confirmOrderMapper.insert(confirmOrder);
 
         // 发送MQ排队购票
+        req.setLogId(MDC.get("LOG_ID"));
         String reqJson = JSON.toJSONString(req);
         log.info("排队购票，发送mq开始，消息：{}", reqJson);
         rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(), reqJson);

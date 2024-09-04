@@ -71,7 +71,7 @@ public class ConfirmOrderDoReq {
     /**
      * 日志跟踪号
      */
-//    private String logId;
+    private String logId;
 
     /**
      * 加入排队人数，用于体验排队功能
