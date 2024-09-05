@@ -211,7 +211,21 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
                 }
 
                 // 一条一条的卖
-                list.forEach(this::sell);
+                list.forEach(confirmOrder -> {
+                    // 如果有一张票出现异常, 就 catch 不影响其他的出票
+                    try {
+                        sell(confirmOrder);
+                    } catch (BusinessException e) {
+                        if (e.getBusinessExceptionEnum().equals(BusinessExceptionEnum.CONFIRM_ORDER_TICKET_COUNT_ERROR)) {
+                            log.info("本订单余票不足，继续售卖下一个订单");
+                            confirmOrder.setStatus(ConfirmOrderStatusEnum.EMPTY.getCode());
+                            updateStatus(confirmOrder);
+                        } else {
+                            throw e;
+                        }
+                    }
+                });
+
             }
         } finally {
             // try finally不能包含加锁的那段代码，否则加锁失败会走到finally里，从而释放别的线程的锁
