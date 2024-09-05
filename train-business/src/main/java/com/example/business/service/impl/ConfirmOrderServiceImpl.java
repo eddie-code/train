@@ -314,8 +314,8 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
 //            log.error("购票异常: ", e);
         } finally {
             // try finally不能包含加锁的那段代码，否则加锁失败会走到finally里，从而释放别的线程的锁
-//            log.info("购票流程结束，释放锁！lockKey：{}", lockKey);
-//            redisTemplate.delete(lockKey);
+            log.info("购票流程结束，释放锁！lockKey：{}", lockKey);
+            redisTemplate.delete(lockKey);
 //            log.info("购票流程结束，释放锁！");
 //            if (null != lock && lock.isHeldByCurrentThread()) {
 //                lock.unlock();
