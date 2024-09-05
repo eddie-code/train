@@ -420,12 +420,6 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
      * @param confirmOrder
      */
     public void updateStatus(ConfirmOrder confirmOrder) {
-//        ConfirmOrder confirmOrderForUpdate = new ConfirmOrder();
-//        confirmOrderForUpdate.setId(confirmOrder.getId());
-//        confirmOrderForUpdate.setUpdateTime(new Date());
-//        confirmOrderForUpdate.setStatus(confirmOrder.getStatus());
-//        confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
-
         LambdaUpdateWrapper<ConfirmOrder> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(ConfirmOrder::getId, confirmOrder.getId())
                 .set(ConfirmOrder::getUpdateTime, new Date())
