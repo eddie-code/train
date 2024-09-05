@@ -133,8 +133,11 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
             log.info("恭喜，抢到锁了！lockKey：{}", lockKey);
         } else {
             // 只是没抢到锁，并不知道票抢完了没，所以提示稍候再试
-            log.info("很遗憾，没抢到锁！lockKey：{}", lockKey);
-            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+            // LOG.info("很遗憾，没抢到锁！lockKey：{}", lockKey);
+            // throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+
+            log.info("没抢到锁，有其它消费线程正在出票，不做任何处理");
+            return;
         }
 
 //        RLock lock = null;
