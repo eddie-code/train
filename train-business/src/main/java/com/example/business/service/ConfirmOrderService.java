@@ -1,5 +1,6 @@
 package com.example.business.service;
 
+import com.example.business.dto.ConfirmOrderMQDto;
 import com.example.common.resp.PageResp;
 import com.example.business.req.ConfirmOrderQueryReq;
 import com.example.business.req.ConfirmOrderDoReq;
@@ -13,6 +14,6 @@ public interface ConfirmOrderService {
 
     void delete(Long id);
 
-    void doConfirm(ConfirmOrderDoReq req);
+    void doConfirm(ConfirmOrderMQDto dto);
 
 }
