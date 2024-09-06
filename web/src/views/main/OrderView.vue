@@ -137,6 +137,11 @@
         <a-button type="danger" block @click="validFirstImageCode">提交验证码</a-button>
     </a-modal>
 
+    <a-modal v-model:visible="lineModalVisible" title="排队购票" :footer="null" :maskClosable="false" :closable="false" style="top: 50px; width: 400px">
+        <div class="book-line">
+            <loading-outlined/>系统正在处理中...
+        </div>
+    </a-modal>
 </template>
 
 <script>
@@ -191,6 +196,7 @@ export default defineComponent({
         const tickets = ref([]);
         const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY;
         const visible = ref(false);
+        const lineModalVisible = ref(false);
 
         // 勾选或去掉某个乘客时，在购票列表中加上或去掉一张表
         watch(() => passengerChecks.value, (newVal, oldVal) => {
@@ -368,10 +374,10 @@ export default defineComponent({
             }).then((response) => {
                 let data = response.data;
                 if (data.success) {
-                    notification.success({description: "下单成功！"});
-                    // visible.value = false;
-                    // imageCodeModalVisible.value = false;
-                    // lineModalVisible.value = true;
+                    // notification.success({description: "下单成功！"});
+                    visible.value = false;
+                    imageCodeModalVisible.value = false;
+                    lineModalVisible.value = true;
                     // confirmOrderId.value = data.content;
                     // queryLineCount();
                 } else {
@@ -464,6 +470,7 @@ export default defineComponent({
             firstImageCodeModalVisible,
             showFirstImageCodeModal,
             validFirstImageCode,
+            lineModalVisible
         };
     },
 });
