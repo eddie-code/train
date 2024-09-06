@@ -21,6 +21,7 @@ import com.example.business.req.SkTokenSaveReq;
 import com.example.business.resp.SkTokenQueryResp;
 import com.example.business.service.SkTokenService;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,12 @@ public class SkTokenServiceImpl implements SkTokenService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    /**
+     * 当前环境，用于区分是否是测试环境
+     */
+    @Value("${spring.profiles.active}")
+    private String env;
 
     /**
      * 初始化
@@ -141,14 +148,16 @@ public class SkTokenServiceImpl implements SkTokenService {
     public boolean validSkToken(Date date, String trainCode, Long memberId) {
         log.info("会员【{}】获取日期【{}】车次【{}】的令牌开始", memberId, DateUtil.formatDate(date), trainCode);
 
-        // 先获取令牌锁，再校验令牌余量，防止机器人抢票，lockKey就是令牌，用来表示【谁能做什么】的一个凭证
-        String lockKey = RedisKeyPreEnum.SK_TOKEN + "-" + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
-        Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
-        if (Boolean.TRUE.equals(setIfAbsent)) {
-            log.info("恭喜，抢到令牌锁了！lockKey：{}", lockKey);
-        } else {
-            log.info("很遗憾，没抢到令牌锁！lockKey：{}", lockKey);
-            return false;
+        if (!env.equals("dev")) {
+            // 先获取令牌锁，再校验令牌余量，防止机器人抢票，lockKey就是令牌，用来表示【谁能做什么】的一个凭证
+            String lockKey = RedisKeyPreEnum.SK_TOKEN + "-" + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
+            Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
+            if (Boolean.TRUE.equals(setIfAbsent)) {
+                log.info("恭喜，抢到令牌锁了！lockKey：{}", lockKey);
+            } else {
+                log.info("很遗憾，没抢到令牌锁！lockKey：{}", lockKey);
+                return false;
+            }
         }
 
         // 先查询缓存
