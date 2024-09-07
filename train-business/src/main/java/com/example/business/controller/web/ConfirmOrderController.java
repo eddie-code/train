@@ -8,16 +8,14 @@ import com.example.business.service.ConfirmOrderService;
 import com.example.common.exception.BusinessException;
 import com.example.common.exception.BusinessExceptionEnum;
 import com.example.common.resp.CommonResp;
+import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -35,6 +33,9 @@ public class ConfirmOrderController {
      */
     @Value("${spring.profiles.active}")
     private String env;
+
+    @Autowired
+    private ConfirmOrderService confirmOrderService;
 
     /**
      * 接口的资源名称不要和接口路径一致，否则会导致限流后走不到降级方法中
@@ -63,6 +64,12 @@ public class ConfirmOrderController {
 
         Long id = beforeConfirmOrderService.beforeDoConfirm(req);
         return new CommonResp<>(String.valueOf(id));
+    }
+
+    @GetMapping("/query-line-count/{id}")
+    public CommonResp<Integer> queryLineCount(@PathVariable Long id) {
+        Integer count = confirmOrderService.queryLineCount(id);
+        return new CommonResp<>(count);
     }
 
     /**
