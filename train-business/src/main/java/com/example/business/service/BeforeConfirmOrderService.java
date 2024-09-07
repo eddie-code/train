@@ -9,7 +9,7 @@ import com.example.business.req.ConfirmOrderDoReq;
  */
 public interface BeforeConfirmOrderService {
 
-    void beforeDoConfirm(ConfirmOrderDoReq req);
+    Long beforeDoConfirm(ConfirmOrderDoReq req);
 
     void beforeDoConfirmBlock(ConfirmOrderDoReq req, BlockException e);
 
