@@ -29,8 +29,10 @@ import com.example.common.exception.BusinessExceptionEnum;
 import com.example.common.resp.PageResp;
 import com.example.common.util.SnowUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -112,9 +114,13 @@ public class ConfirmOrderServiceImpl implements ConfirmOrderService {
         confirmOrderMapper.deleteById(id);
     }
 
+    @Async
     @SentinelResource(value = "doConfirm", blockHandler = "doConfirmBlock")
     @Override
-    public synchronized void doConfirm(ConfirmOrderMQDto dto) {
+    public void doConfirm(ConfirmOrderMQDto dto) {
+
+        MDC.put("LOG_ID", dto.getLogId());
+        log.info("异步出票开始：{}", dto);
 
 //         // 校验令牌余量
 //         boolean validSkToken = skTokenService.validSkToken(dto.getDate(), dto.getTrainCode(), LoginMemberContext.getId());

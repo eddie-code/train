@@ -14,6 +14,7 @@ import com.example.business.mapper.ConfirmOrderMapper;
 import com.example.business.req.ConfirmOrderDoReq;
 import com.example.business.req.ConfirmOrderTicketReq;
 import com.example.business.service.BeforeConfirmOrderService;
+import com.example.business.service.ConfirmOrderService;
 import com.example.business.service.SkTokenService;
 import com.example.common.context.LoginMemberContext;
 import com.example.common.exception.BusinessException;
@@ -42,11 +43,14 @@ public class BeforeConfirmOrderServiceImpl implements BeforeConfirmOrderService 
     @Autowired
     private SkTokenService skTokenService;
 
-    @Resource
-    private RocketMQTemplate rocketMQTemplate;
+//    @Resource
+//    private RocketMQTemplate rocketMQTemplate;
 
     @Autowired
     private ConfirmOrderMapper confirmOrderMapper;
+
+    @Autowired
+    private ConfirmOrderService confirmOrderService;
 
     @SentinelResource(value = "beforeDoConfirm", blockHandler = "beforeDoConfirmBlock")
     @Override
@@ -93,9 +97,10 @@ public class BeforeConfirmOrderServiceImpl implements BeforeConfirmOrderService 
         confirmOrderMQDto.setTrainCode(req.getTrainCode());
         confirmOrderMQDto.setLogId(MDC.get("LOG_ID"));
         String reqJson = JSON.toJSONString(confirmOrderMQDto);
-        log.info("排队购票，发送mq开始，消息：{}", reqJson);
-        rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(), reqJson);
-        log.info("排队购票，发送mq结束");
+//        log.info("排队购票，发送mq开始，消息：{}", reqJson);
+//        rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(), reqJson);
+//        log.info("排队购票，发送mq结束");
+        confirmOrderService.doConfirm(confirmOrderMQDto);
         return confirmOrder.getId();
 
     }
